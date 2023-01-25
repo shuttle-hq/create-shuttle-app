@@ -1,0 +1,30 @@
+{
+  "name": "create-shuttle-app",
+  "version": "0.1.0",
+  "bin": {
+    "create-shuttle-app": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "ncc build ./index.ts -w -o ./dist/",
+    "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
+    "build": "pnpm release"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4",
+    "@types/node": "^12.6.8",
+    "@types/prompts": "2.0.1",
+    "@vercel/ncc": "0.34.0",
+    "commander": "2.20.0",
+    "chalk": "2.4.2",
+    "prompts": "2.1.0"
+  },
+  "dependencies": {
+    "create-next-app": "^13.1.5"
+  },
+  "engines": {
+    "node": ">=14.6.0"
+  }
+}
