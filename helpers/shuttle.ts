@@ -1,4 +1,5 @@
 import crypto from "crypto"
+import { profanity } from "@2toad/profanity"
 
 type ValidationResult = {
     valid: boolean
@@ -6,10 +7,40 @@ type ValidationResult = {
 }
 
 export function validateShuttleName(name: string): ValidationResult {
-    return {
+    let validationResult: ValidationResult = {
         valid: true,
-        problems: ["must contain only alphanumeric characters or - or _"],
+        problems: [],
     }
+
+    if (!/^[a-zA-Z0-9-]+$/.test(name)) {
+        validationResult.valid = false
+        validationResult.problems.push(
+            `Project name can only contain characters inside of the alphanumeric range, except for '-'`
+        )
+    }
+
+    if (profanity.exists(name)) {
+        validationResult.valid = false
+        validationResult.problems.push(
+            `Project name must not include profanity`
+        )
+    }
+
+    if (["shuttleapp", "shuttle"].some((reserved) => name === reserved)) {
+        validationResult.valid = false
+        validationResult.problems.push(
+            `Project name must not be a reserved word`
+        )
+    }
+
+    if (name.startsWith("-") || name.endsWith("-")) {
+        validationResult.valid = false
+        validationResult.problems.push(
+            `Project name must not start or end with '-'`
+        )
+    }
+
+    return validationResult
 }
 
 export function appendUniqueSuffix(projectName: string): string {
