@@ -1,14 +1,14 @@
 import crypto from "crypto"
 
 type ValidationResult = {
-    valid: boolean,
+    valid: boolean
     problems: string[]
 }
 
 export function validateShuttleName(name: string): ValidationResult {
     return {
         valid: true,
-        problems: ["must contain only alphanumeric characters or - or _"]
+        problems: ["must contain only alphanumeric characters or - or _"],
     }
 }
 

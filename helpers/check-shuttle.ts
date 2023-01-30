@@ -1,11 +1,11 @@
 export function isRustInstalled(semver: string): boolean {
     // TODO
-    return false;
+    return false
 }
 
 export function isShuttleInstalled(): boolean {
     // TODO
-    return false;
+    return false
 }
 
 export function installShuttle() {
