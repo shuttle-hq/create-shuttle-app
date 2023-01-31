@@ -9,13 +9,18 @@ import path from "path"
 import fs from "fs"
 import { execSync } from "child_process"
 
-import {installRust, installShuttle, isRustInstalled, isShuttleInstalled} from "./helpers/check-shuttle"
-import {appendUniqueSuffix, validateShuttleName} from "./helpers/shuttle"
-import {isPathSafe} from "./helpers/is-path-safe";
-import {cloneExample} from "./helpers/git";
+import {
+    installRust,
+    installShuttle,
+    isRustInstalled,
+    isShuttleInstalled,
+} from "./helpers/check-shuttle"
+import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
+import { isPathSafe } from "./helpers/is-path-safe"
+import { cloneExample } from "./helpers/git"
 
 type Error = {
-    error: string,
+    error: string
     problems?: string[]
 }
 
@@ -44,19 +49,19 @@ const program = new Commander.Command(packageJson.name)
         projectPath = name
     })
     .option(
-        '--ts, --typescript',
+        "--ts, --typescript",
         `
   Initialize as a TypeScript project. (default)
 `
     )
     .option(
-        '--js, --javascript',
+        "--js, --javascript",
         `
   Initialize as a JavaScript project.
 `
     )
     .option(
-        '--eslint',
+        "--eslint",
         `
   Initialize with eslint config.
 `
@@ -70,14 +75,14 @@ async function run(): Promise<void> {
             type: "confirm",
             name: "installRustup",
             initial: true,
-            message: "Do you wish to install rustup now?"
+            message: "Do you wish to install rustup now?",
         })
 
         if (res.installRustup) {
             installRust()
         } else {
             throw {
-                error: "rustup is required"
+                error: "rustup is required",
             }
         }
     }
@@ -87,14 +92,14 @@ async function run(): Promise<void> {
             type: "confirm",
             name: "installShuttle",
             initial: true,
-            message: "Do you wish to install shuttle now?"
+            message: "Do you wish to install shuttle now?",
         })
 
         if (res.installShuttle) {
             installShuttle()
         } else {
             throw {
-                error: "shuttle is required"
+                error: "shuttle is required",
             }
         }
     }
@@ -106,13 +111,15 @@ async function run(): Promise<void> {
             message: "What is your project named?",
             initial: "my-app",
             validate: (name) => {
-                const validation = validateShuttleName(path.basename(path.resolve(name)))
+                const validation = validateShuttleName(
+                    path.basename(path.resolve(name))
+                )
                 if (validation.valid) {
                     return true
                 } else {
                     return "Invalid project name: " + validation.problems![0]
                 }
-            }
+            },
         })
         if (typeof res.path == "string") {
             projectPath = res.path.trim()
@@ -121,20 +128,23 @@ async function run(): Promise<void> {
 
     if (!projectPath) {
         throw {
-            error: "Please specify the project directory:\n" +
-                `  ${chalk.cyan(program.name())} ${chalk.green("<project-directory>")}`,
+            error:
+                "Please specify the project directory:\n" +
+                `  ${chalk.cyan(program.name())} ${chalk.green(
+                    "<project-directory>"
+                )}`,
         }
     }
 
     const resolvedProjectPath = path.resolve(projectPath)
     const projectName = path.basename(resolvedProjectPath)
-    const shuttleProjectName = appendUniqueSuffix(projectName);
+    const shuttleProjectName = appendUniqueSuffix(projectName)
 
     const { safe, problems } = isPathSafe(resolvedProjectPath)
     if (!safe) {
         throw {
             error: `Cannot create project at path ${resolvedProjectPath}`,
-            problems
+            problems,
         }
     }
 
@@ -147,7 +157,7 @@ async function run(): Promise<void> {
     cloneExample({
         repository: "https://github.com/shuttle-hq/examples.git",
         relativePath: "axum/static-next-server",
-        path: shuttleProjectPath
+        path: shuttleProjectPath,
     })
 
     // TODO: create Shuttle.toml and set project name to "shuttleProjectName"
@@ -165,11 +175,10 @@ async function run(): Promise<void> {
     //   encourage users to run `npm run deploy`
 }
 
-run()
-    .catch(async ({error, problems= []}) => {
-        // TODO: print expand on `reason`
-        console.log()
-        console.log(`${chalk.bold(chalk.red(error))}`)
-        problems.forEach((problem: string) => console.log(`  ${problem}`))
-        process.exit(1)
-    })
+run().catch(async ({ error, problems = [] }) => {
+    // TODO: print expand on `reason`
+    console.log()
+    console.log(`${chalk.bold(chalk.red(error))}`)
+    problems.forEach((problem: string) => console.log(`  ${problem}`))
+    process.exit(1)
+})
