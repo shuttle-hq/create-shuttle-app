@@ -150,7 +150,9 @@ async function run(): Promise<void> {
 
     // TODO: check `create-next-app` is around and handle errors from calling it
     const typescript = !program.javascript
-    execSync(`create-next-app ${typescript} ${resolvedProjectPath}`)
+    execSync(
+        `node_modules/.bin/create-next-app ${typescript} ${resolvedProjectPath}`
+    )
 
     // TODO: clone the static file server template from shuttle, put it in backend/
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
