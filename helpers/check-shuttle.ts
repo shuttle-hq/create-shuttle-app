@@ -4,6 +4,7 @@ import path from "path"
 import { sync as commandExists } from "command-exists"
 import chalk from "chalk"
 import {
+    RUSTC_VERSION,
     SHUTTLE_DOWNLOAD_URL,
     SHUTTLE_LINUX_BIN,
     SHUTTLE_MAC_BIN,
@@ -47,8 +48,8 @@ export function installShuttle() {
 
     const installBin = (bin: string, suffix?: string) => {
         return `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
-            tar -xzf ${bin} shuttle/cargo-shuttle${suffix && suffix} &&\
-            mv shuttle/cargo-shuttle${suffix && suffix} ${cargoBinDir} &&\
+            tar -xzf ${bin} shuttle/cargo-shuttle${suffix ?? ""} &&\
+            mv shuttle/cargo-shuttle${suffix ?? ""} ${cargoBinDir} &&\
             rm -rf ${bin} shuttle`
     }
 
@@ -81,14 +82,14 @@ export function installRust() {
         case "linux":
         case "darwin":
             execSync(
-                `curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | bash -s -- -y`
+                `curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | bash -s -- -y --default-toolchain ${RUSTC_VERSION}`
             )
             break
         case "win32":
             execSync(
                 `wget -OutFile "C:\rustup-init.exe" 
                 https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe
-                C:\rustup-init.exe -y --default-toolchain 1.65.0 --target x86_64-pc-windows-msvc`
+                C:\rustup-init.exe -y --default-toolchain ${RUSTC_VERSION} --target x86_64-pc-windows-msvc`
             )
             break
         default:

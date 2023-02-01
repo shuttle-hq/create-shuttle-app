@@ -1,4 +1,4 @@
-export const RUSTC_VERSION = "^1.64.0"
+export const RUSTC_VERSION = "1.65.0"
 
 export const SHUTTLE_DOWNLOAD_URL =
     "https://github.com/shuttle-hq/shuttle/releases/download/v0.9.0/"

@@ -76,7 +76,7 @@ async function run(): Promise<void> {
             type: "confirm",
             name: "installRustup",
             initial: true,
-            message: "Do you wish to install rustup now?",
+            message: `create-shuttle-app requires Rust v${RUSTC_VERSION}, do you wish to install it now?`,
         })
 
         if (res.installRustup) {
