@@ -86,10 +86,11 @@ export function installRust() {
             )
             break
         case "win32":
+            const rustupPath = path.join(__dirname, "..", "rustup-init.exe")
             execSync(
-                `wget -OutFile "C:\rustup-init.exe" 
-                https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe
-                C:\rustup-init.exe -y --default-toolchain ${RUSTC_VERSION} --target x86_64-pc-windows-msvc`
+                `curl -s -OL https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
+                 ${rustupPath} -y --default-toolchain ${RUSTC_VERSION} --target x86_64-pc-windows-msvc &&\
+                 rm -r ${rustupPath}`
             )
             break
         default:
