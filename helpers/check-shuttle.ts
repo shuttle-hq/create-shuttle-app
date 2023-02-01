@@ -11,29 +11,25 @@ import {
     SHUTTLE_WINDOWS_BIN,
 } from "./constants"
 import satisfies from "semver/functions/satisfies"
+import { existsSync } from "fs"
 
 /**
- * Checks if rust is installed, and checks if the installed version
- * satisfies the passed in version requirement.
+ * Checks if native dependency is installed using the `<dependency> --version`
+ * command, and checks if the installed version satisfies the passed in version
+ * requirement.
+ * @arg dependency The name of the dependency to check.
  * @arg semver The required rust version as a semver string.
  */
-export function isRustInstalled(semver: string): boolean {
-    if (!commandExists("rustc")) {
+export function checkInstalled(dependency: string, semver: string): boolean {
+    if (!commandExists(dependency)) {
         return false
     }
 
-    const rustc = execSync(`rustc --version`).toString()
+    const installedVersion = execSync(`${dependency} --version`)
+        .toString()
+        .split(" ")[1]
 
-    const rustVersion = rustc.split(" ")[1]
-
-    return satisfies(semver, rustVersion)
-}
-
-/**
- * Checks if cargo-shuttle is installed.
- */
-export function isShuttleInstalled(): boolean {
-    return commandExists("cargo-shuttle")
+    return satisfies(semver, installedVersion)
 }
 
 /**
@@ -43,8 +39,7 @@ export function isShuttleInstalled(): boolean {
  * @throws Will throw an error if the users platform is not windows, mac or linux.
  */
 export function installShuttle() {
-    const homedir = os.homedir()
-    const cargoBinDir = path.join(homedir, ".cargo", "bin")
+    let cargoBinDir = findCargoBinDir()
 
     const installBin = (bin: string, suffix?: string) => {
         return `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
@@ -71,6 +66,28 @@ export function installShuttle() {
                     on installing cargo-shuttle manually.`,
             }
     }
+}
+
+/**
+ * Looks for the cargo home directory in the default location, and if it's not there
+ * try the `CARGO_HOME` environment variable.
+ * @throws If cargo home can't be found.
+ */
+function findCargoBinDir(): string {
+    const homedir = os.homedir()
+    let cargoHome = path.join(homedir, ".cargo")
+
+    if (!existsSync(cargoHome)) {
+        if (!process.env.CARGO_HOME) {
+            throw {
+                error: `Failed to find the cargo home directory`,
+            }
+        } else {
+            cargoHome = process.env.CARGO_HOME
+        }
+    }
+
+    return path.join(cargoHome, "bin")
 }
 
 /**

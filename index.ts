@@ -12,13 +12,12 @@ import { execSync } from "child_process"
 import {
     installRust,
     installShuttle,
-    isRustInstalled,
-    isShuttleInstalled,
+    checkInstalled,
 } from "./helpers/check-shuttle"
 import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
-import { RUSTC_VERSION } from "./helpers/constants"
+import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
 
 type Error = {
     error: string
@@ -71,7 +70,7 @@ const program = new Commander.Command(packageJson.name)
     .parse(process.argv)
 
 async function run(): Promise<void> {
-    if (!isRustInstalled(RUSTC_VERSION)) {
+    if (!checkInstalled("rustc", RUSTC_VERSION)) {
         const res = await prompts({
             type: "confirm",
             name: "installRustup",
@@ -88,12 +87,12 @@ async function run(): Promise<void> {
         }
     }
 
-    if (!isShuttleInstalled()) {
+    if (!checkInstalled("cargo-shuttle", SHUTTLE_VERSION)) {
         const res = await prompts({
             type: "confirm",
             name: "installShuttle",
             initial: true,
-            message: "Do you wish to install shuttle now?",
+            message: `create-shuttle-app requires cargo-shuttle v${SHUTTLE_VERSION}, do you wish to install it now?`,
         })
 
         if (res.installShuttle) {
