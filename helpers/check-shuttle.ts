@@ -21,10 +21,11 @@ export function isShuttleInstalled(): boolean {
 export function installShuttle() {
     const homedir = os.homedir()
     const cargoBinDir = path.join(homedir, ".cargo", "bin")
-    const installBin = (bin: string) => {
+
+    const installBin = (bin: string, suffix?: string) => {
         return `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
-            tar -xzf ${bin} shuttle/cargo-shuttle &&\
-            mv shuttle/cargo-shuttle ${cargoBinDir} &&\
+            tar -xzf ${bin} shuttle/cargo-shuttle${suffix && suffix} &&\
+            mv shuttle/cargo-shuttle${suffix && suffix} ${cargoBinDir} &&\
             rm -rf ${bin} shuttle`
     }
 
@@ -36,7 +37,7 @@ export function installShuttle() {
             execSync(installBin(SHUTTLE_MAC_BIN))
             break
         case "win32":
-            execSync(installBin(SHUTTLE_WINDOWS_BIN))
+            execSync(installBin(SHUTTLE_WINDOWS_BIN, ".exe"))
             break
         default:
             throw {
