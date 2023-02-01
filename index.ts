@@ -148,7 +148,7 @@ async function run(): Promise<void> {
         }
     }
 
-    execSync("node_modules/.bin/create-next-app", [
+    execSync(`${__dirname}/create-next-app`, [
         !program.javascript ? "--ts" : "--js",
         resolvedProjectPath,
     ])
