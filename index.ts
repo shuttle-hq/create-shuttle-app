@@ -18,6 +18,7 @@ import {
 import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
+import { RUSTC_VERSION } from "./helpers/constants"
 
 type Error = {
     error: string
@@ -70,7 +71,7 @@ const program = new Commander.Command(packageJson.name)
     .parse(process.argv)
 
 async function run(): Promise<void> {
-    if (!isRustInstalled("^1.64")) {
+    if (!isRustInstalled(RUSTC_VERSION)) {
         const res = await prompts({
             type: "confirm",
             name: "installRustup",

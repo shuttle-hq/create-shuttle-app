@@ -9,15 +9,38 @@ import {
     SHUTTLE_MAC_BIN,
     SHUTTLE_WINDOWS_BIN,
 } from "./constants"
+import satisfies from "semver/functions/satisfies"
 
+/**
+ * Checks if rust is installed, and checks if the installed version
+ * satisfies the passed in version requirement.
+ * @arg semver The required rust version as a semver string.
+ */
 export function isRustInstalled(semver: string): boolean {
-    return commandExists("rustc")
+    if (!commandExists("rustc")) {
+        return false
+    }
+
+    const rustc = execSync(`rustc --version`).toString()
+
+    const rustVersion = rustc.split(" ")[1]
+
+    return satisfies(semver, rustVersion)
 }
 
+/**
+ * Checks if cargo-shuttle is installed.
+ */
 export function isShuttleInstalled(): boolean {
     return commandExists("cargo-shuttle")
 }
 
+/**
+ * Installs cargo-shuttle by downloading a binary for the users platform
+ * from the github release binaries and moving it to their `$CARGO_HOME/bin`
+ * directory.
+ * @throws Will throw an error if the users platform is not windows, mac or linux.
+ */
 export function installShuttle() {
     const homedir = os.homedir()
     const cargoBinDir = path.join(homedir, ".cargo", "bin")
@@ -49,6 +72,10 @@ export function installShuttle() {
     }
 }
 
+/**
+ * Installs rust.
+ * @throws Will throw an error if the users platform is not windows, mac or linux.
+ */
 export function installRust() {
     switch (process.platform) {
         case "linux":
