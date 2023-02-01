@@ -18,7 +18,7 @@ import { existsSync } from "fs"
  * command, and checks if the installed version satisfies the passed in version
  * requirement.
  * @arg dependency The name of the dependency to check.
- * @arg semver The required rust version as a semver string.
+ * @arg semver The required version as a semver string.
  */
 export function checkInstalled(dependency: string, semver: string): boolean {
     if (!commandExists(dependency)) {
