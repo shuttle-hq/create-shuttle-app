@@ -7,7 +7,7 @@ const typescriptEslintRules = {
 
 module.exports = {
     env: {
-        commonjs: true,
+        node: true,
         es2019: true,
     },
     plugins: ["@typescript-eslint"],
