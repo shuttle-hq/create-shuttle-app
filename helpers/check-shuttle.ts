@@ -39,7 +39,7 @@ export function checkInstalled(dependency: string, semver: string): boolean {
  * @throws Will throw an error if the users platform is not windows, mac or linux.
  */
 export function installShuttle() {
-    let cargoBinDir = findCargoBinDir()
+    const cargoBinDir = findCargoBinDir()
 
     const installBin = (bin: string, suffix?: string) => {
         return `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
@@ -103,11 +103,14 @@ export function installRust() {
             )
             break
         case "win32":
-            const rustupPath = path.join(__dirname, "..", "rustup-init.exe")
             execSync(
                 `curl -s -OL https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                 ${rustupPath} -y --default-toolchain ${RUSTC_VERSION} --target x86_64-pc-windows-msvc &&\
-                 rm -r ${rustupPath}`
+                 ${path.join(
+                     __dirname,
+                     "..",
+                     "rustup-init.exe"
+                 )} -y --default-toolchain ${RUSTC_VERSION} --target x86_64-pc-windows-msvc &&\
+                 rm -r ${path.join(__dirname, "..", "rustup-init.exe")}`
             )
             break
         default:

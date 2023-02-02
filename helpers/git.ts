@@ -15,32 +15,32 @@ export async function cloneExample({
     path: string
 }) {
     // Strip ".git" suffix if it exists
-    repository = repository.replace(/\.git$/, '')
+    repository = repository.replace(/\.git$/, "")
 
     repository += "/archive/refs/heads/main.zip"
 
-    let response = await fetch(repository)
+    const response = await fetch(repository)
 
     if (response.status !== 200) {
         throw {
             error: `Failed to download template from "${repository}"`,
-            problems: [response.statusText]
+            problems: [response.statusText],
         }
     }
 
     try {
-        let body = await stream2buffer(response.body as Stream)
-        let zip = new AdmZip(body)
+        const body = await stream2buffer(response.body as Stream)
+        const zip = new AdmZip(body)
 
-        let entries = zip.getEntries()
+        const entries = zip.getEntries()
 
         // Default to all
-        var zipEntry = entries[0]
+        let zipEntry = entries[0]
 
         if (relativePath) {
-            let tmpEntry = entries.find(entry => {
-                // Shafe off archive folder
-                let name = entry.entryName.split("/").filter(s => s !== "")
+            const tmpEntry = entries.find((entry) => {
+                // Shave off archive folder
+                const name = entry.entryName.split("/").filter((s) => s !== "")
                 name.shift()
 
                 return name.join("/") === relativePath
@@ -50,7 +50,7 @@ export async function cloneExample({
                 zipEntry = tmpEntry
             } else {
                 throw {
-                    error: `Could not find "${relativePath}" in specified template archive`
+                    error: `Could not find "${relativePath}" in specified template archive`,
                 }
             }
         }
@@ -59,7 +59,7 @@ export async function cloneExample({
     } catch (error) {
         throw {
             error: "Failed to extract template",
-            problems: [error]
+            problems: [error],
         }
     }
 }
@@ -67,11 +67,10 @@ export async function cloneExample({
 // Shamelessly copied from https://stackoverflow.com/a/67729663
 async function stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-        const _buf = Array<any>();
+        const _buf = Array<any>()
 
-        stream.on("data", chunk => _buf.push(chunk));
-        stream.on("end", () => resolve(Buffer.concat(_buf)));
-        stream.on("error", err => reject(`error converting stream - ${err}`));
-
-    });
+        stream.on("data", (chunk) => _buf.push(chunk))
+        stream.on("end", () => resolve(Buffer.concat(_buf)))
+        stream.on("error", (err) => reject(`error converting stream - ${err}`))
+    })
 }

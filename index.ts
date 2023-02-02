@@ -19,12 +19,7 @@ import { execSync } from "./helpers/process"
 import { patchPackage } from "./helpers/package"
 import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
 
-type Error = {
-    error: string
-    problems?: string[]
-}
-
-let projectPath: string = ""
+let projectPath = ""
 
 const handleSigTerm = () => process.exit(0)
 
@@ -117,7 +112,7 @@ async function run(): Promise<void> {
                 if (validation.valid) {
                     return true
                 } else {
-                    return "Invalid project name: " + validation.problems![0]
+                    return "Invalid project name: " + validation.problems[0]
                 }
             },
         })

@@ -19,10 +19,10 @@ export function execSync(
         shell: true,
         stdio: options?.stdio ?? ["inherit", "pipe", "pipe"],
     }
-    let result = _spawnSync(command, args, options)
+    const result = _spawnSync(command, args, options)
 
     if (result.error) {
-        let error = result.error as SpawnError
+        const error = result.error as SpawnError
 
         if (error.code == "ENOENT") {
             throw {
@@ -36,7 +36,7 @@ export function execSync(
     }
 
     if (result.status != 0) {
-        let problems = []
+        const problems = []
 
         if (result.stderr) {
             problems.push(result.stderr)
