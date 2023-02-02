@@ -165,7 +165,7 @@ async function run(): Promise<void> {
 
     patchPackage(resolvedProjectPath)
 
-    // TODO: do we need a `cargo shuttle project new` here?
+    // TODO: do we need a  `cargo shuttle login` and a `cargo shuttle project new` here?
 
     const shuttleOrange = chalk.hex("#ff8a3f")
     console.log(
@@ -178,8 +178,16 @@ async function run(): Promise<void> {
     `)
     )
     console.log(`
-When you're ready to deploy your application to production,
-all you need to do is run: ${chalk.bold("cargo shuttle deploy")}`)
+A few steps remain to deploy your application to production:
+
+First, you'll need to login: ${chalk.bold(`cargo shuttle login`)},
+and start your project container: ${chalk.bold(
+        `cargo shuttle project new --working-directory ${shuttleProjectPath}`
+    )} 
+
+That's it, when you're ready to deploy run: ${chalk.bold(
+        `cargo shuttle deploy --working-directory ${shuttleProjectPath}`
+    )}`)
 }
 
 run().catch(async ({ error, problems = [] }) => {
