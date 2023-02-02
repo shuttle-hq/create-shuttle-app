@@ -14,7 +14,11 @@ export function execSync(
     options?: SpawnSyncOptions
 ): string | Buffer {
     // Capture stderr (pipe) to handle errors
-    options = { ...options, ...{ stdio: ["inherit", "inherit", "pipe"] } }
+    options = {
+        ...options,
+        shell: true,
+        stdio: options?.stdio ?? ["inherit", "pipe", "pipe"],
+    }
     let result = _spawnSync(command, args, options)
 
     if (result.error) {
