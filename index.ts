@@ -167,13 +167,16 @@ async function run(): Promise<void> {
 
     // TODO: do we need a `cargo shuttle project new` here?
 
-    console.log(`
+    const shuttleOrange = chalk.hex("#ff8a3f")
+    console.log(
+        shuttleOrange(`
      ____  _           _   _   _
     / ___|| |__  _   _| |_| |_| | ___
     \\___ \\| '_ \\| | | | __| __| |/ _ \\
      ___) | | | | |_| | |_| |_| |  __/
     |____/|_| |_|\\__,_|\\__|\\__|_|\\___|
     `)
+    )
     console.log(`
 When you're ready to deploy your application to production,
 all you need to do is run: ${chalk.bold("cargo shuttle deploy")}`)
