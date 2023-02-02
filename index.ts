@@ -16,6 +16,7 @@ import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
+import { patchPackage } from "./helpers/package"
 import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
 
 type Error = {
@@ -166,9 +167,7 @@ async function run(): Promise<void> {
 
     // TODO: create Shuttle.toml and set project name to "shuttleProjectName"
 
-    // TODO: mutate `package.json`
-    //   "build" becomes "next build && next export -o ./backend/static"
-    //   add "deploy" target "build && cargo shuttle deploy --working-directory ./backend/"
+    patchPackage(resolvedProjectPath)
 
     // TODO: mutate next.config.js
     //   add 'images: { unoptimized: true }' to `nextConfig` object
