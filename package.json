@@ -11,7 +11,7 @@
         "dev": "ncc build ./index.ts -w -o ./dist/",
         "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
         "build": "pnpm release",
-        "copy-assets": "copyfiles --flat node_modules/.bin/create-next-app ./dist/"
+        "copy-assets": "ncp node_modules/create-next-app/dist/index.js ./dist/create-next-app && ncp node_modules/create-next-app/dist/templates ./dist/templates"
     },
     "devDependencies": {
         "@types/node": "^12.6.8",
@@ -19,13 +19,13 @@
         "@vercel/ncc": "0.34.0",
         "chalk": "2.4.2",
         "commander": "2.20.0",
-        "copyfiles": "^2.4.1",
+        "create-next-app": "^13.1.5",
+        "ncp": "^2.0.0",
         "prompts": "2.1.0",
         "typescript": "^4.9.4"
     },
     "dependencies": {
-        "@2toad/profanity": "^2.2.0",
-        "create-next-app": "^13.1.5"
+        "@2toad/profanity": "^2.2.0"
     },
     "engines": {
         "node": ">=14.6.0"
