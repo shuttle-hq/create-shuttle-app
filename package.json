@@ -11,7 +11,8 @@
         "dev": "ncc build ./index.ts -w -o ./dist/",
         "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
         "build": "pnpm release",
-        "copy-assets": "ncp node_modules/create-next-app/dist/index.js ./dist/create-next-app && ncp node_modules/create-next-app/dist/templates ./dist/templates"
+        "copy-assets:create-next-app": "ncp node_modules/create-next-app/dist/index.js ./dist/create-next-app && ncp node_modules/create-next-app/dist/templates ./dist/templates",
+        "copy-assets:overrides": "ncp overrides ./dist/templates"
     },
     "devDependencies": {
         "@types/node": "^12.6.8",
