@@ -157,9 +157,8 @@ async function run(): Promise<void> {
         }
     )
 
-    // TODO: clone the static file server template from shuttle, put it in backend/
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
-    cloneExample({
+    await cloneExample({
         repository: "https://github.com/shuttle-hq/examples.git",
         relativePath: "axum/static-next-server",
         path: shuttleProjectPath,

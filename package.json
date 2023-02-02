@@ -27,10 +27,12 @@
     },
     "dependencies": {
         "@2toad/profanity": "^2.2.0",
+        "@types/adm-zip": "^0.5.0",
         "@types/command-exists": "^1.2.0",
         "@types/semver": "^7.3.13",
+        "adm-zip": "^0.5.10",
         "command-exists": "^1.2.9",
-        "create-next-app": "^13.1.5",
+        "node-fetch": "^3.3.0",
         "semver": "^7.3.8"
     },
     "engines": {
