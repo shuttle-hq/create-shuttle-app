@@ -66,6 +66,12 @@ const program = new Commander.Command(packageJson.name)
   Initialize with eslint config.
 `
     )
+    .option(
+        "--shuttle-example <github-url>",
+        `
+  A GitHub URL to use to bootstrap the shuttle backend with.
+`
+    )
     .allowUnknownOption(false)
     .parse(process.argv)
 
@@ -157,10 +163,11 @@ async function run(): Promise<void> {
         }
     )
 
+    const repository = program.shuttleExample || "https:github.com/shuttle-hq/examples.git"
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
     await cloneExample({
-        repository: "https://github.com/shuttle-hq/examples.git",
-        relativePath: "axum/static-next-server",
+        repository,
+        relativePath: "axum/hello-world",
         path: shuttleProjectPath,
     })
 
