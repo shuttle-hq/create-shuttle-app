@@ -169,9 +169,6 @@ async function run(): Promise<void> {
 
     patchPackage(resolvedProjectPath)
 
-    // TODO: mutate next.config.js
-    //   add 'images: { unoptimized: true }' to `nextConfig` object
-
     // TODO: do we need a `cargo shuttle project new` here?
 
     // TODO: print great success and next esteps
