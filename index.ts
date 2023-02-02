@@ -147,10 +147,14 @@ async function run(): Promise<void> {
         }
     }
 
-    execSync(path.join(__dirname, "create-next-app"), [
-        !program.javascript ? "--ts" : "--js",
-        resolvedProjectPath,
-    ])
+    execSync(
+        path.join(__dirname, "create-next-app"),
+        [!program.javascript ? "--ts" : "--js", resolvedProjectPath],
+        {
+            shell: false,
+            stdio: ["inherit", "inherit", "pipe"],
+        }
+    )
 
     // TODO: clone the static file server template from shuttle, put it in backend/
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
