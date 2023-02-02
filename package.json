@@ -8,7 +8,7 @@
         "dist"
     ],
     "scripts": {
-        "lint": "eslint --ext .js,.ts .",
+        "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "dev": "ncc build ./index.ts -w -o ./dist/",
         "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
         "build": "pnpm release",
