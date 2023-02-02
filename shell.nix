@@ -7,6 +7,7 @@ in
     name = "create_app_shell";
     buildInputs = with nixpkgs; [
       nodejs
+      nodePackages.prettier
       yarn
     ];
   }

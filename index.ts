@@ -7,7 +7,6 @@ import packageJson from "./package.json"
 
 import path from "path"
 import fs from "fs"
-import { execSync } from "child_process"
 
 import {
     installRust,
@@ -18,6 +17,7 @@ import {
 import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
+import { execSync } from "./helpers/process"
 
 type Error = {
     error: string
@@ -148,9 +148,10 @@ async function run(): Promise<void> {
         }
     }
 
-    // TODO: check `create-next-app` is around and handle errors from calling it
-    const typescript = !program.javascript
-    execSync(`create-next-app ${typescript} ${resolvedProjectPath}`)
+    execSync(`${__dirname}/create-next-app`, [
+        !program.javascript ? "--ts" : "--js",
+        resolvedProjectPath,
+    ])
 
     // TODO: clone the static file server template from shuttle, put it in backend/
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")

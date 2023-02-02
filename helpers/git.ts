@@ -1,4 +1,4 @@
-import { execSync } from "child_process"
+import { execSync } from "./process"
 
 export function cloneExample({
     repository,
