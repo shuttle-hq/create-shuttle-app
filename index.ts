@@ -178,14 +178,15 @@ async function run(): Promise<void> {
     `)
     )
     console.log(`
-A few steps remain to deploy your application to production:
+To deploy your application to the cloud, you need to run the following commands:
 
-First, you'll need to login: ${chalk.bold(`cargo shuttle login`)},
-and start your project container: ${chalk.bold(
+First, login: ${chalk.bold(`cargo shuttle login`)}
+
+Start your project container: ${chalk.bold(
         `cargo shuttle project new --working-directory ${shuttleProjectPath}`
     )} 
 
-That's it, when you're ready to deploy run: ${chalk.bold(
+And that's it! When you're ready to deploy: ${chalk.bold(
         `cargo shuttle deploy --working-directory ${shuttleProjectPath}`
     )}`)
 }
