@@ -165,8 +165,6 @@ async function run(): Promise<void> {
 
     patchPackage(resolvedProjectPath)
 
-    // TODO: do we need a  `cargo shuttle login` and a `cargo shuttle project new` here?
-
     const shuttleOrange = chalk.hex("#ff8a3f")
     console.log(
         shuttleOrange(`
