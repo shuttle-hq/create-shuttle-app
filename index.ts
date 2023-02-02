@@ -180,15 +180,11 @@ async function run(): Promise<void> {
     console.log(`
 To deploy your application to the cloud, you need to run the following commands:
 
-First, login: ${chalk.bold(`cargo shuttle login`)}
+First, login: ${chalk.bold(`npm run login`)}
 
-Start your project container: ${chalk.bold(
-        `cargo shuttle project new --working-directory ${shuttleProjectPath}`
-    )} 
+Start your project container: ${chalk.bold(`npm run start`)} 
 
-And that's it! When you're ready to deploy: ${chalk.bold(
-        `cargo shuttle deploy --working-directory ${shuttleProjectPath}`
-    )}`)
+And that's it! When you're ready to deploy: ${chalk.bold(`npm run deploy`)}`)
 }
 
 run().catch(async ({ error, problems = [] }) => {
