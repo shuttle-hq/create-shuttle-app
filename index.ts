@@ -167,9 +167,6 @@ async function run(): Promise<void> {
     //   "build" becomes "next build && next export -o ./backend/static"
     //   add "deploy" target "build && cargo shuttle deploy --working-directory ./backend/"
 
-    // TODO: mutate next.config.js
-    //   add 'images: { unoptimized: true }' to `nextConfig` object
-
     // TODO: do we need a `cargo shuttle project new` here?
 
     // TODO: print great success and next esteps
