@@ -16,7 +16,7 @@ import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
-import { patchPackage } from "./helpers/package"
+import { patchNextConfig, patchPackage } from "./helpers/package"
 import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
 
 type Error = {
@@ -167,6 +167,7 @@ async function run(): Promise<void> {
     // TODO: create Shuttle.toml and set project name to "shuttleProjectName"
 
     patchPackage(resolvedProjectPath)
+    patchNextConfig(resolvedProjectPath)
 
     // TODO: do we need a `cargo shuttle project new` here?
 
