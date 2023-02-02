@@ -1,4 +1,3 @@
-import { execSync } from "child_process"
 import os from "os"
 import path from "path"
 import { sync as commandExists } from "command-exists"
@@ -12,6 +11,7 @@ import {
 } from "./constants"
 import satisfies from "semver/functions/satisfies"
 import { existsSync } from "fs"
+import { execSync } from "./process"
 
 /**
  * Checks if native dependency is installed using the `<dependency> --version`

@@ -6,7 +6,6 @@ import Commander from "commander"
 import packageJson from "./package.json"
 
 import path from "path"
-import fs from "fs"
 
 import {
     installRust,
@@ -148,7 +147,7 @@ async function run(): Promise<void> {
         }
     }
 
-    execSync(`${__dirname}/create-next-app`, [
+    execSync(path.join(__dirname, "create-next-app"), [
         !program.javascript ? "--ts" : "--js",
         resolvedProjectPath,
     ])
