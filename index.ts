@@ -4,25 +4,22 @@ import chalk from "chalk"
 import prompts from "prompts"
 import Commander from "commander"
 import packageJson from "./package.json"
-
 import path from "path"
-
 import {
     installRust,
     installShuttle,
     checkInstalled,
 } from "./helpers/check-shuttle"
-import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
+import {
+    appendUniqueSuffix,
+    createShuttleToml,
+    validateShuttleName,
+} from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
 import { patchPackage } from "./helpers/package"
 import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
-
-type Error = {
-    error: string
-    problems?: string[]
-}
 
 let projectPath: string = ""
 
@@ -164,14 +161,22 @@ async function run(): Promise<void> {
         path: shuttleProjectPath,
     })
 
-    // TODO: create Shuttle.toml and set project name to "shuttleProjectName"
+    createShuttleToml(shuttleProjectName, resolvedProjectPath)
 
     patchPackage(resolvedProjectPath)
 
     // TODO: do we need a `cargo shuttle project new` here?
 
-    // TODO: print great success and next esteps
-    //   encourage users to run `npm run deploy`
+    console.log(`
+     ____  _           _   _   _
+    / ___|| |__  _   _| |_| |_| | ___
+    \\___ \\| '_ \\| | | | __| __| |/ _ \\
+     ___) | | | | |_| | |_| |_| |  __/
+    |____/|_| |_|\\__,_|\\__|\\__|_|\\___|
+    `)
+    console.log(`
+When you're ready to deploy your application to production,
+all you need to do is run: ${chalk.bold("cargo shuttle deploy")}`)
 }
 
 run().catch(async ({ error, problems = [] }) => {
