@@ -11,7 +11,8 @@
         "dev": "ncc build ./index.ts -w -o ./dist/",
         "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
         "build": "pnpm release",
-        "copy-assets": "ncp node_modules/create-next-app/dist/index.js ./dist/create-next-app && ncp node_modules/create-next-app/dist/templates ./dist/templates"
+        "copy-assets:create-next-app": "ncp node_modules/create-next-app/dist/index.js ./dist/create-next-app && ncp node_modules/create-next-app/dist/templates ./dist/templates",
+        "copy-assets:overrides": "ncp overrides ./dist/templates"
     },
     "devDependencies": {
         "@types/node": "^12.6.8",
@@ -27,8 +28,12 @@
     "dependencies": {
         "@2toad/profanity": "^2.2.0",
         "@types/adm-zip": "^0.5.0",
+        "@types/command-exists": "^1.2.0",
+        "@types/semver": "^7.3.13",
         "adm-zip": "^0.5.10",
-        "node-fetch": "^3.3.0"
+        "command-exists": "^1.2.9",
+        "node-fetch": "^3.3.0",
+        "semver": "^7.3.8"
     },
     "engines": {
         "node": ">=14.6.0"

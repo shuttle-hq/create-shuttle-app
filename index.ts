@@ -6,18 +6,18 @@ import Commander from "commander"
 import packageJson from "./package.json"
 
 import path from "path"
-import fs from "fs"
 
 import {
     installRust,
     installShuttle,
-    isRustInstalled,
-    isShuttleInstalled,
+    checkInstalled,
 } from "./helpers/check-shuttle"
 import { appendUniqueSuffix, validateShuttleName } from "./helpers/shuttle"
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
+import { patchPackage } from "./helpers/package"
+import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
 
 type Error = {
     error: string
@@ -70,12 +70,12 @@ const program = new Commander.Command(packageJson.name)
     .parse(process.argv)
 
 async function run(): Promise<void> {
-    if (!isRustInstalled("^1.64")) {
+    if (!checkInstalled("rustc", RUSTC_VERSION)) {
         const res = await prompts({
             type: "confirm",
             name: "installRustup",
             initial: true,
-            message: "Do you wish to install rustup now?",
+            message: `create-shuttle-app requires Rust v${RUSTC_VERSION}, do you wish to install it now?`,
         })
 
         if (res.installRustup) {
@@ -87,12 +87,12 @@ async function run(): Promise<void> {
         }
     }
 
-    if (!isShuttleInstalled()) {
+    if (!checkInstalled("cargo-shuttle", SHUTTLE_VERSION)) {
         const res = await prompts({
             type: "confirm",
             name: "installShuttle",
             initial: true,
-            message: "Do you wish to install shuttle now?",
+            message: `create-shuttle-app requires cargo-shuttle v${SHUTTLE_VERSION}, do you wish to install it now?`,
         })
 
         if (res.installShuttle) {
@@ -148,10 +148,14 @@ async function run(): Promise<void> {
         }
     }
 
-    execSync(`${__dirname}/create-next-app`, [
-        !program.javascript ? "--ts" : "--js",
-        resolvedProjectPath,
-    ])
+    execSync(
+        path.join(__dirname, "create-next-app"),
+        [!program.javascript ? "--ts" : "--js", resolvedProjectPath],
+        {
+            shell: false,
+            stdio: ["inherit", "inherit", "pipe"],
+        }
+    )
 
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
     await cloneExample({
@@ -162,12 +166,7 @@ async function run(): Promise<void> {
 
     // TODO: create Shuttle.toml and set project name to "shuttleProjectName"
 
-    // TODO: mutate `package.json`
-    //   "build" becomes "next build && next export -o ./backend/static"
-    //   add "deploy" target "build && cargo shuttle deploy --working-directory ./backend/"
-
-    // TODO: mutate next.config.js
-    //   add 'images: { unoptimized: true }' to `nextConfig` object
+    patchPackage(resolvedProjectPath)
 
     // TODO: do we need a `cargo shuttle project new` here?
 
