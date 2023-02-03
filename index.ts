@@ -145,8 +145,12 @@ async function run(): Promise<void> {
         }
     }
 
+    // If the caller is on windows, we need to prefix the command with node
     execSync(
-        path.join(__dirname, "create-next-app"),
+        `${process.platform === "win32" && "node "}${path.join(
+            __dirname,
+            "create-next-app"
+        )}`,
         [!program.javascript ? "--ts" : "--js", resolvedProjectPath],
         {
             shell: false,
