@@ -1,5 +1,7 @@
 import crypto from "crypto"
 import { profanity } from "@2toad/profanity"
+import { writeFileSync } from "fs"
+import path from "path"
 
 type ValidationResult = {
     valid: boolean
@@ -46,4 +48,11 @@ export function validateShuttleName(name: string): ValidationResult {
 export function appendUniqueSuffix(projectName: string): string {
     const randomSuffix = crypto.randomBytes(3).toString("hex")
     return `${projectName}-${randomSuffix}`
+}
+
+export function createShuttleToml(name: string, projectPath: string) {
+    writeFileSync(
+        path.join(projectPath, "backend", "Shuttle.toml"),
+        `name = "${name}"`
+    )
 }

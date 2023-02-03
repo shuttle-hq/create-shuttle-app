@@ -7,19 +7,26 @@ import { Stream } from "stream"
  */
 export async function cloneExample({
     repository,
-    relativePath,
     path,
 }: {
     repository: string
-    relativePath?: string
     path: string
 }) {
+    let parts = repository.split("/")
+    repository = parts.splice(0, 5).join("/")
+    let relativePath = parts.join("/")
+
     // Strip ".git" suffix if it exists
     repository = repository.replace(/\.git$/, "")
 
     repository += "/archive/refs/heads/main.zip"
 
-    const response = await fetch(repository)
+    let response = await fetch(repository).catch((error) => {
+        throw {
+            error: `Failed to clone shuttle example from "${repository}"`,
+            problems: [error],
+        }
+    })
 
     if (response.status !== 200) {
         throw {
