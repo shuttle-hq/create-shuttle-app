@@ -71,6 +71,9 @@ export function patchNextConfig(projectPath: string) {
 }
 
 const transformer = (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
+    let foundUnoptimized = false
+    let foundImages = false
+
     function visit_file(node: ts.Node): ts.Node {
         return ts.visitEachChild(node, visit_statement, context)
     }
@@ -87,14 +90,44 @@ const transformer = (context: ts.TransformationContext) => (rootNode: ts.SourceF
     }
     function visit_variable_declaration(node: ts.Node): ts.Node {
         if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.escapedText === "nextConfig") {
-            node = ts.visitEachChild(node, visit_object_literal, context)
+            node = ts.visitEachChild(node, visit_next_config, context)
         }
 
         return node
     }
-    function visit_object_literal(node: ts.Node): ts.Node {
-        if (ts.isObjectLiteralExpression(node)) {
+    function visit_next_config(node: ts.Node): ts.Node {
+        node = ts.visitEachChild(node, visit_next_config_properties, context)
+
+        // Add images if it is missing
+        if (!foundImages && ts.isObjectLiteralExpression(node)) {
             node = ts.factory.updateObjectLiteralExpression(node, node.properties.concat(get_images_property()))
+        }
+
+        return node
+    }
+    function visit_next_config_properties(node: ts.Node): ts.Node {
+        if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && node.name.escapedText === "images") {
+            node = ts.visitEachChild(node, visit_images_property, context)
+            foundImages = true
+        }
+
+        return node
+    }
+    function visit_images_property(node: ts.Node): ts.Node {
+        node = ts.visitEachChild(node, visit_images_properties, context)
+
+        // Add unoptimized if it is not in `images`
+        if (!foundUnoptimized && ts.isObjectLiteralExpression(node)) {
+            node = ts.factory.updateObjectLiteralExpression(node, node.properties.concat(get_unoptimized_property()))
+        }
+
+        return node
+    }
+    function visit_images_properties(node: ts.Node): ts.Node {
+        if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && node.name.escapedText === "unoptimized") {
+            // Make sure its always true
+            node = ts.factory.updatePropertyAssignment(node, ts.factory.createIdentifier("unoptimized"), ts.factory.createTrue())
+            foundUnoptimized = true
         }
 
         return node
@@ -103,10 +136,12 @@ const transformer = (context: ts.TransformationContext) => (rootNode: ts.SourceF
     return ts.visitNode(rootNode, visit_file)
 }
 
+function get_unoptimized_property(): ts.PropertyAssignment {
+    return ts.factory.createPropertyAssignment("unoptimized", ts.factory.createTrue())
+}
 function get_images_property(): ts.PropertyAssignment {
-    let unoptimizedProperty = ts.factory.createPropertyAssignment("unoptimized", ts.factory.createTrue())
     return ts.factory.createPropertyAssignment(
         "images",
-        ts.factory.createObjectLiteralExpression([unoptimizedProperty], true)
+        ts.factory.createObjectLiteralExpression([get_unoptimized_property()], true)
     )
 }
