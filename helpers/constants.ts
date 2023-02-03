@@ -9,4 +9,4 @@ export const SHUTTLE_LINUX_BIN = `${CURRENT_BIN}-x86_64-unknown-linux-musl.tar.g
 export const SHUTTLE_MAC_BIN = `${CURRENT_BIN}-x86_64-apple-darwin.tar.gz`
 export const SHUTTLE_WINDOWS_BIN = `${CURRENT_BIN}-x86_64-pc-windows-msvc.tar.gz`
 
-export const SHUTTLE_EXAMPLE_URL = "https://github.com/shuttle-hq/examples/axum/hello-world"
+export const SHUTTLE_EXAMPLE_URL = "https://github.com/shuttle-hq/examples/axum/static-next-server"
