@@ -20,7 +20,7 @@
         "@vercel/ncc": "0.34.0",
         "chalk": "2.4.2",
         "commander": "2.20.0",
-        "create-next-app": "^13.1.5",
+        "create-next-app": "^13.1.6",
         "ncp": "^2.0.0",
         "prompts": "2.1.0",
         "typescript": "^4.9.4"
