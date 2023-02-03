@@ -106,8 +106,13 @@ export function installRust() {
             const rustupPath = path.join(__dirname, "..", "rustup-init.exe")
             execSync(
                 `curl -s -OL https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                 ${rustupPath} -y --default-toolchain ${RUSTC_VERSION} --target x86_64-pc-windows-msvc &&\
-                 rm -r ${rustupPath}`
+                 ${rustupPath} --default-toolchain ${RUSTC_VERSION} &&\
+                 rm -r ${rustupPath}`,
+                undefined,
+                {
+                    shell: false,
+                    stdio: ["inherit", "inherit", "pipe"],
+                }
             )
             break
         default:
