@@ -18,8 +18,12 @@ import {
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
-import { patchPackage } from "./helpers/package"
-import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
+import { patchNextConfig, patchPackage } from "./helpers/package"
+import {
+    RUSTC_VERSION,
+    SHUTTLE_VERSION,
+    SHUTTLE_EXAMPLE_URL,
+} from "./helpers/constants"
 
 let projectPath: string = ""
 
@@ -61,6 +65,20 @@ const program = new Commander.Command(packageJson.name)
         "--eslint",
         `
   Initialize with eslint config.
+`
+    )
+    .option(
+        "-e, --example [name]|[github-url]",
+        `
+  An example to bootstrap the app with. You can use an example name
+  from the official Next.js repo or a GitHub URL. The URL can use
+  any branch and/or subdirectory
+`
+    )
+    .option(
+        "--shuttle-example <github-url>",
+        `
+  A GitHub URL to use to bootstrap the shuttle backend with.
 `
     )
     .allowUnknownOption(false)
@@ -145,25 +163,42 @@ async function run(): Promise<void> {
         }
     }
 
-    execSync(
-        path.join(__dirname, "create-next-app"),
-        [!program.javascript ? "--ts" : "--js", resolvedProjectPath],
-        {
-            shell: false,
-            stdio: ["inherit", "inherit", "pipe"],
-        }
-    )
+    let args = []
 
+    if (program.javascript) {
+        args.push("--js")
+    }
+
+    if (program.typescript) {
+        args.push("--ts")
+    }
+
+    if (program.example) {
+        args.push("--example", program.example)
+    }
+
+    if (program.eslint) {
+        args.push("--eslint")
+    }
+
+    args.push(resolvedProjectPath)
+
+    execSync(path.join(__dirname, "create-next-app"), args, {
+        shell: false,
+        stdio: ["inherit", "inherit", "pipe"],
+    })
+
+    const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
     await cloneExample({
-        repository: "https://github.com/shuttle-hq/examples.git",
-        relativePath: "axum/static-next-server",
+        repository,
         path: shuttleProjectPath,
     })
 
     createShuttleToml(shuttleProjectName, resolvedProjectPath)
 
     patchPackage(resolvedProjectPath)
+    patchNextConfig(resolvedProjectPath)
 
     const shuttleOrange = chalk.hex("#ff8a3f")
     console.log(
