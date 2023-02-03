@@ -19,7 +19,12 @@ export async function cloneExample({
 
     repository += "/archive/refs/heads/main.zip"
 
-    let response = await fetch(repository)
+    let response = await fetch(repository).catch(error => {
+        throw {
+            error: `Failed to clone shuttle example from "${repository}"`,
+            problems: [error]
+        }
+    })
 
     if (response.status !== 200) {
         throw {
