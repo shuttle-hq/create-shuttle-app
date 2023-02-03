@@ -1,5 +1,6 @@
-import { readFileSync, writeFileSync } from "fs"
+import { existsSync, readFileSync, writeFileSync } from "fs"
 import path from "path"
+import ts from "typescript"
 import { execSync } from "./process"
 
 /**
@@ -56,4 +57,141 @@ function getPkgManager(): PackageManager {
     } else {
         return 'npm'
     }
+}
+
+/**
+ * Fixup `next.config.js` to correctly build static files
+ */
+export function patchNextConfig(projectPath: string) {
+    let configPath = path.join(projectPath, "next.config.js")
+
+    if (existsSync(configPath)) {
+        let source = ts.createSourceFile("next.config.js", readFileSync(configPath).toString(), ts.ScriptTarget.ES5)
+        let result = ts.transform(source, [transformer])
+        let newSource = ts.createPrinter().printFile(result.transformed[0])
+        writeFileSync(configPath, newSource)
+    } else {
+        writeFileSync(configPath, `
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    unoptimized: true,
+  },
+}
+
+module.exports = nextConfig
+`)
+    }
+}
+
+const transformer = (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
+    let foundUnoptimized = false
+    let foundImages = false
+
+    // This is where things start, we are basically visiting a file with the following statements
+    //
+    // @type {import('next').NextConfig} */
+    // const nextConfig = { // <-- This is a variable statement we want to go deeper into
+    //   images: {
+    //     unoptimized: false,
+    //     other: false
+    //   },
+    //   more: true
+    // }
+    //
+    // module.exports = nextConfig
+    function visit_statement(node: ts.Node): ts.Node {
+
+        if (ts.isVariableStatement(node)) {
+            node = ts.visitEachChild(node, visit_variable_declaration_list, context)
+        }
+
+        return node
+    }
+    function visit_variable_declaration_list(node: ts.Node): ts.Node {
+        return ts.visitEachChild(node, visit_variable_declaration, context)
+    }
+    // We are now visiting a variable declaration. However, we hope that the example used nextJS conventions and has a
+    // variable named "nextConfig" so that we can visit each of its properties
+    function visit_variable_declaration(node: ts.Node): ts.Node {
+        if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.escapedText === "nextConfig") {
+            node = ts.visitEachChild(node, visit_next_config, context)
+        }
+
+        return node
+    }
+    // We are now in the config object - aka the following bit
+    //
+    // {
+    //   images: {
+    //     unoptimized: false,
+    //     other: false
+    //   },
+    //   more: true
+    // }
+    function visit_next_config(node: ts.Node): ts.Node {
+        node = ts.visitEachChild(node, visit_next_config_property, context)
+
+        // Add images if it is missing after going through all the properties
+        if (!foundImages && ts.isObjectLiteralExpression(node)) {
+            node = ts.factory.updateObjectLiteralExpression(node, node.properties.concat(get_images_property()))
+        }
+
+        return node
+    }
+    // We are now on every single key-value in the config - aka the following
+    //
+    // images: {
+    //   unoptimized: false,
+    //   other: false
+    // }
+    function visit_next_config_property(node: ts.Node): ts.Node {
+        if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && node.name.escapedText === "images") {
+            node = ts.visitEachChild(node, visit_images_property, context)
+            foundImages = true
+        }
+
+        return node
+    }
+    // And we are finally inside the images property - aka this bit
+    //
+    // {
+    //   unoptimized: false,
+    //   other: false
+    // }
+    function visit_images_property(node: ts.Node): ts.Node {
+        node = ts.visitEachChild(node, visit_images_properties, context)
+
+        // Add unoptimized if it is not in `images` after visiting all its properties
+        if (!foundUnoptimized && ts.isObjectLiteralExpression(node)) {
+            node = ts.factory.updateObjectLiteralExpression(node, node.properties.concat(get_unoptimized_property()))
+        }
+
+        return node
+    }
+    // And we a looking at every single property in images - aka
+    //
+    // unoptimized: false,
+    // other: false
+    function visit_images_properties(node: ts.Node): ts.Node {
+        if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && node.name.escapedText === "unoptimized") {
+            // Make sure its always true
+            node = ts.factory.updatePropertyAssignment(node, ts.factory.createIdentifier("unoptimized"), ts.factory.createTrue())
+            foundUnoptimized = true
+        }
+
+        return node
+    }
+
+    return ts.visitEachChild(rootNode, visit_statement, context)
+}
+
+function get_unoptimized_property(): ts.PropertyAssignment {
+    return ts.factory.createPropertyAssignment("unoptimized", ts.factory.createTrue())
+}
+function get_images_property(): ts.PropertyAssignment {
+    return ts.factory.createPropertyAssignment(
+        "images",
+        ts.factory.createObjectLiteralExpression([get_unoptimized_property()], true)
+    )
 }

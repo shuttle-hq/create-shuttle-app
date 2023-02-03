@@ -8,3 +8,5 @@ const CURRENT_BIN = "cargo-shuttle-v0.9.0-8-gf75c2e9"
 export const SHUTTLE_LINUX_BIN = `${CURRENT_BIN}-x86_64-unknown-linux-musl.tar.gz`
 export const SHUTTLE_MAC_BIN = `${CURRENT_BIN}-x86_64-apple-darwin.tar.gz`
 export const SHUTTLE_WINDOWS_BIN = `${CURRENT_BIN}-x86_64-pc-windows-msvc.tar.gz`
+
+export const SHUTTLE_EXAMPLE_URL = "https://github.com/shuttle-hq/examples/axum/static-next-server"
