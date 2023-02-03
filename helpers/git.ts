@@ -7,13 +7,15 @@ import { Stream } from "stream"
  */
 export async function cloneExample({
     repository,
-    relativePath,
     path,
 }: {
     repository: string
-    relativePath?: string
     path: string
 }) {
+    let parts = repository.split("/")
+    repository = parts.splice(0, 5).join("/")
+    let relativePath = parts.join("/")
+
     // Strip ".git" suffix if it exists
     repository = repository.replace(/\.git$/, '')
 

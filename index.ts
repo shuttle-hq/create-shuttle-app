@@ -17,7 +17,11 @@ import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
 import { patchNextConfig, patchPackage } from "./helpers/package"
-import { RUSTC_VERSION, SHUTTLE_VERSION } from "./helpers/constants"
+import {
+    RUSTC_VERSION,
+    SHUTTLE_VERSION,
+    SHUTTLE_EXAMPLE_URL,
+} from "./helpers/constants"
 
 type Error = {
     error: string
@@ -163,11 +167,10 @@ async function run(): Promise<void> {
         }
     )
 
-    const repository = program.shuttleExample || "https:github.com/shuttle-hq/examples.git"
+    const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
     await cloneExample({
         repository,
-        relativePath: "axum/hello-world",
         path: shuttleProjectPath,
     })
 
