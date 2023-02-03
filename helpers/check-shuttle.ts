@@ -39,24 +39,15 @@ export function checkInstalled(dependency: string, semver: string): boolean {
  * @throws Will throw an error if the users platform is not windows, mac or linux.
  */
 export function installShuttle() {
-    let cargoBinDir = findCargoBinDir()
-
-    const installBin = (bin: string, suffix?: string) => {
-        return `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
-            tar -xzf ${bin} shuttle/cargo-shuttle${suffix ?? ""} &&\
-            mv shuttle/cargo-shuttle${suffix ?? ""} ${cargoBinDir} &&\
-            rm -rf ${bin} shuttle`
-    }
-
     switch (process.platform) {
         case "linux":
-            execSync(installBin(SHUTTLE_LINUX_BIN))
+            installShuttleBin(SHUTTLE_LINUX_BIN)
             break
         case "darwin":
-            execSync(installBin(SHUTTLE_MAC_BIN))
+            installShuttleBin(SHUTTLE_MAC_BIN)
             break
         case "win32":
-            execSync(installBin(SHUTTLE_WINDOWS_BIN, ".exe"))
+            installShuttleBin(SHUTTLE_WINDOWS_BIN, ".exe")
             break
         default:
             throw {
@@ -68,6 +59,19 @@ export function installShuttle() {
     }
 }
 
+function installShuttleBin(bin: string, suffix?: string) {
+    let cargoBinDir = findCargoBinDir()
+
+    const cmd = `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
+    tar -xzf ${bin} shuttle/cargo-shuttle${suffix ?? ""} &&\
+    mv shuttle/cargo-shuttle${suffix ?? ""} ${cargoBinDir} &&\
+    rm -rf ${bin} shuttle`
+
+    execSync(cmd, undefined, {
+        shell: false,
+        stdio: ["ignore", "inherit", "pipe"],
+    })
+}
 /**
  * Looks for the cargo home directory in the default location, and if it's not there
  * try the `CARGO_HOME` environment variable.
