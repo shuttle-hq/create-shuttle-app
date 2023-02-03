@@ -8,18 +8,23 @@
         "dist"
     ],
     "scripts": {
+        "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "dev": "ncc build ./index.ts -w -o ./dist/",
         "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
         "build": "pnpm release",
         "copy-assets": "ncp node_modules/create-next-app/dist/index.js ./dist/create-next-app && ncp node_modules/create-next-app/dist/templates ./dist/templates"
     },
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.50.0",
+        "@typescript-eslint/parser": "^5.50.0",
         "@types/node": "^12.6.8",
         "@types/prompts": "2.0.1",
         "@vercel/ncc": "0.34.0",
         "chalk": "2.4.2",
         "commander": "2.20.0",
         "create-next-app": "^13.1.6",
+        "eslint": "^8.33.0",
+        "eslint-config-prettier": "^8.6.0",
         "ncp": "^2.0.0",
         "prompts": "2.1.0",
         "typescript": "^4.9.5"

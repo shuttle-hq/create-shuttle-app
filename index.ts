@@ -25,7 +25,7 @@ import {
     SHUTTLE_EXAMPLE_URL,
 } from "./helpers/constants"
 
-let projectPath: string = ""
+let projectPath = ""
 
 const handleSigTerm = () => process.exit(0)
 
@@ -132,7 +132,7 @@ async function run(): Promise<void> {
                 if (validation.valid) {
                     return true
                 } else {
-                    return "Invalid project name: " + validation.problems![0]
+                    return "Invalid project name: " + validation.problems[0]
                 }
             },
         })
@@ -163,7 +163,7 @@ async function run(): Promise<void> {
         }
     }
 
-    let args = []
+    const args = []
 
     if (program.javascript) {
         args.push("--js")

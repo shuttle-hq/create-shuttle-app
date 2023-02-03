@@ -60,7 +60,7 @@ export function installShuttle() {
 }
 
 function installShuttleBin(bin: string, suffix?: string) {
-    let cargoBinDir = findCargoBinDir()
+    const cargoBinDir = findCargoBinDir()
 
     const cmd = `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
     tar -xzf ${bin} shuttle/cargo-shuttle${suffix ?? ""} &&\
@@ -107,11 +107,14 @@ export function installRust() {
             )
             break
         case "win32":
-            const rustupPath = path.join(__dirname, "..", "rustup-init.exe")
             execSync(
                 `curl -s -OL https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                 ${rustupPath} --default-toolchain ${RUSTC_VERSION} &&\
-                 rm -r ${rustupPath}`,
+                 ${path.join(
+                     __dirname,
+                     "..",
+                     "rustup-init.exe"
+                 )} --default-toolchain ${RUSTC_VERSION} &&\
+                 rm -r ${path.join(__dirname, "..", "rustup-init.exe")}`,
                 undefined,
                 {
                     shell: false,

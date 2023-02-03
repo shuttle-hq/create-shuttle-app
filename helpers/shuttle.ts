@@ -9,7 +9,7 @@ type ValidationResult = {
 }
 
 export function validateShuttleName(name: string): ValidationResult {
-    let validationResult: ValidationResult = {
+    const validationResult: ValidationResult = {
         valid: true,
         problems: [],
     }
