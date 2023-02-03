@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs"
+import { existsSync, readFileSync, writeFileSync } from "fs"
 import path from "path"
 import ts from "typescript"
 import { execSync } from "./process"
@@ -64,10 +64,24 @@ function getPkgManager(): PackageManager {
  */
 export function patchNextConfig(projectPath: string) {
     let configPath = path.join(projectPath, "next.config.js")
-    let source = ts.createSourceFile("next.config.js", readFileSync(configPath).toString(), ts.ScriptTarget.ES5)
-    let result = ts.transform(source, [transformer])
-    let newSource = ts.createPrinter().printFile(result.transformed[0])
-    writeFileSync(configPath, newSource)
+
+    if (existsSync(configPath)) {
+        let source = ts.createSourceFile("next.config.js", readFileSync(configPath).toString(), ts.ScriptTarget.ES5)
+        let result = ts.transform(source, [transformer])
+        let newSource = ts.createPrinter().printFile(result.transformed[0])
+        writeFileSync(configPath, newSource)
+    } else {
+        writeFileSync(configPath, `
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    unoptimized: true,
+  },
+}
+
+module.exports = nextConfig
+`)
+    }
 }
 
 const transformer = (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
