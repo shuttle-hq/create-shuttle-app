@@ -183,7 +183,12 @@ async function run(): Promise<void> {
 
     args.push(resolvedProjectPath)
 
-    execSync(path.join(__dirname, "create-next-app"), args, {
+    // If the user is on windows, we need to prefix the create-next-app cmd with node
+    const createNextAppCmd = `${
+        process.platform === "win32" ? "node " : ""
+    }${path.join(__dirname, "create-next-app")}`
+
+    execSync(createNextAppCmd, args, {
         shell: false,
         stdio: ["inherit", "inherit", "pipe"],
     })
