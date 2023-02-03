@@ -163,7 +163,7 @@ async function run(): Promise<void> {
         }
     }
 
-    let args = []
+    const args = []
 
     if (program.javascript) {
         args.push("--js")

@@ -60,7 +60,7 @@ export function installShuttle() {
 }
 
 function installShuttleBin(bin: string, suffix?: string) {
-    let cargoBinDir = findCargoBinDir()
+    const cargoBinDir = findCargoBinDir()
 
     const cmd = `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
     tar -xzf ${bin} shuttle/cargo-shuttle${suffix ?? ""} &&\

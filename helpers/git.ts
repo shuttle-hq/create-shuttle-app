@@ -12,16 +12,16 @@ export async function cloneExample({
     repository: string
     path: string
 }) {
-    let parts = repository.split("/")
+    const parts = repository.split("/")
     repository = parts.splice(0, 5).join("/")
-    let relativePath = parts.join("/")
+    const relativePath = parts.join("/")
 
     // Strip ".git" suffix if it exists
     repository = repository.replace(/\.git$/, "")
 
     repository += "/archive/refs/heads/main.zip"
 
-    let response = await fetch(repository).catch((error) => {
+    const response = await fetch(repository).catch((error) => {
         throw {
             error: `Failed to clone shuttle example from "${repository}"`,
             problems: [error],

@@ -26,8 +26,8 @@ export function patchPackage(projectPath: string) {
     writeFileSync(packagesPath, newData)
 
     // Install using native package manager
-    let packageManager = getPkgManager()
-    let args = []
+    const packageManager = getPkgManager()
+    const args = []
 
     if (packageManager === "yarn") {
         args.push("add", "--dev")
@@ -63,16 +63,16 @@ function getPkgManager(): PackageManager {
  * Fixup `next.config.js` to correctly build static files
  */
 export function patchNextConfig(projectPath: string) {
-    let configPath = path.join(projectPath, "next.config.js")
+    const configPath = path.join(projectPath, "next.config.js")
 
     if (existsSync(configPath)) {
-        let source = ts.createSourceFile(
+        const source = ts.createSourceFile(
             "next.config.js",
             readFileSync(configPath).toString(),
             ts.ScriptTarget.ES5
         )
-        let result = ts.transform(source, [transformer])
-        let newSource = ts.createPrinter().printFile(result.transformed[0])
+        const result = ts.transform(source, [transformer])
+        const newSource = ts.createPrinter().printFile(result.transformed[0])
         writeFileSync(configPath, newSource)
     } else {
         writeFileSync(
