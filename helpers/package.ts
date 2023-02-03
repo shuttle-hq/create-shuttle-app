@@ -10,9 +10,16 @@ export function patchPackage(projectPath: string) {
     let data = readFileSync(packagesPath)
     let packages = JSON.parse(data.toString())
 
-    packages["scripts"]["build"] = "next build && next export -o ./backend/static"
-    packages["scripts"]["deploy"] = "build && cargo shuttle deploy --working-directory ./backend/"
-    packages["scripts"]["dev"] = "concurrently --names \"next, shuttle\" --kill-others \"next dev\" \"cargo shuttle run --working-directory ./backend/\""
+    packages["scripts"]["build"] =
+        "next build && next export -o ./backend/static"
+    packages["scripts"]["login"] =
+        "cargo shuttle login --working-directory ./backend/"
+    packages["scripts"]["start"] =
+        "cargo shuttle project new --working-directory ./backend/"
+    packages["scripts"]["deploy"] =
+        "build && cargo shuttle deploy --working-directory ./backend/"
+    packages["scripts"]["dev"] =
+        "concurrently --names \"next, shuttle\" --kill-others \"next dev\" \"cargo shuttle run --working-directory ./backend/\""
 
     let newData = JSON.stringify(packages, null, 4)
     writeFileSync(packagesPath, newData)
