@@ -1,16 +1,18 @@
 import fetch from "node-fetch"
 import AdmZip from "adm-zip"
 import { Stream } from "stream"
+import { existsSync, mkdirSync, renameSync } from "fs"
+import path from "path"
 
 /**
  * Clone a repository example into the path given. Can also extract only a relative path from the repository if given
  */
 export async function cloneExample({
     repository,
-    path,
+    projectPath,
 }: {
     repository: string
-    path: string
+    projectPath: string
 }) {
     const parts = repository.split("/")
     repository = parts.splice(0, 5).join("/")
@@ -62,7 +64,21 @@ export async function cloneExample({
             }
         }
 
-        zip.extractEntryTo(zipEntry, path, false, true)
+        zip.extractEntryTo(zipEntry, projectPath, false, true)
+
+        // `zip.extractEntryTo` will flatten directories, so we need to create the
+        // src directory and move lib.rs into it.
+        const srcPath = path.join(projectPath, "src")
+        if (!existsSync(srcPath)) {
+            mkdirSync(srcPath)
+        }
+
+        // node.js way of moving a file
+        // https://stackoverflow.com/a/41562625
+        renameSync(
+            path.join(projectPath, "lib.rs"),
+            path.join(srcPath, "lib.rs")
+        )
     } catch (error) {
         throw {
             error: "Failed to extract template",

@@ -197,7 +197,7 @@ async function run(): Promise<void> {
     const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
     await cloneExample({
         repository,
-        path: shuttleProjectPath,
+        projectPath: shuttleProjectPath,
     })
 
     createShuttleToml(shuttleProjectName, resolvedProjectPath)
