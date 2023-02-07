@@ -18,7 +18,7 @@ export function patchPackage(projectPath: string) {
     packages["scripts"]["start"] =
         "cargo shuttle project new --working-directory ./backend/"
     packages["scripts"]["deploy"] =
-        "npm run build && cargo shuttle deploy --working-directory ./backend/"
+        "npm run build && cargo shuttle deploy --working-directory ./backend/ --allow-dirty"
     packages["scripts"]["dev"] =
         'npm run build && concurrently --names "next, shuttle" --kill-others "next dev" "cargo shuttle run --working-directory ./backend/"'
     packages["scripts"]["stop"] =
