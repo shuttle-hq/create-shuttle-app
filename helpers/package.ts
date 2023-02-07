@@ -12,15 +12,15 @@ export function patchPackage(projectPath: string) {
     const packages = JSON.parse(data.toString())
 
     packages["scripts"]["build"] =
-        "next build && next export -o ./backend/static"
+        "next build && next export -o ./backend/static && cargo build --manifest-path ./backend/Cargo.toml"
     packages["scripts"]["login"] =
         "cargo shuttle login --working-directory ./backend/"
     packages["scripts"]["start"] =
         "cargo shuttle project new --working-directory ./backend/"
     packages["scripts"]["deploy"] =
-        "npm run build && cargo build --manifest-path ./backend/Cargo.toml && cargo shuttle deploy --working-directory ./backend/"
+        "npm run build && cargo shuttle deploy --working-directory ./backend/"
     packages["scripts"]["dev"] =
-        'concurrently --names "next, shuttle" --kill-others "next dev" "cargo shuttle run --working-directory ./backend/"'
+        'npm run build && concurrently --names "next, shuttle" --kill-others "next dev" "cargo shuttle run --working-directory ./backend/"'
     packages["scripts"]["stop"] =
         "cargo shuttle project rm --working-directory ./backend/"
 

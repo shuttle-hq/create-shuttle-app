@@ -222,7 +222,10 @@ First, login: ${chalk.bold(`npm run login`)}
 
 Start your project container: ${chalk.bold(`npm run start`)} 
 
-And that's it! When you're ready to deploy: ${chalk.bold(`npm run deploy`)}`)
+And that's it! When you're ready to deploy: ${chalk.bold(`npm run deploy`)}
+
+If you'd like to develop locally, you can start a next.js dev server as well as your
+shuttle backend with the ${chalk.bold("npm run dev")} command.`)
 }
 
 run().catch(async ({ error, problems = [] }) => {
