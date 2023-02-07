@@ -101,9 +101,13 @@ function findCargoBinDir(): string {
 export function installRust() {
     switch (process.platform) {
         case "linux":
-        case "darwin":
             execSync(
                 `curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | bash -s -- -y --default-toolchain ${RUSTC_VERSION}`
+            )
+            break
+        case "darwin":
+            execSync(
+                `curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | bash -s -- -y --default-toolchain ${RUSTC_VERSION}`
             )
             break
         case "win32":
