@@ -5,10 +5,10 @@ import chalk from "chalk"
 import {
     RUSTC_VERSION,
     SHUTTLE_DOWNLOAD_URL,
-    SHUTTLE_LINUX_BIN,
-    SHUTTLE_MAC_BIN,
+    SHUTTLE_LINUX_TARGET,
+    SHUTTLE_MAC_TARGET,
     SHUTTLE_TAG,
-    SHUTTLE_WINDOWS_BIN,
+    SHUTTLE_WINDOWS_TARGET,
 } from "./constants"
 import satisfies from "semver/functions/satisfies"
 import { existsSync } from "fs"
@@ -42,13 +42,13 @@ export function checkInstalled(dependency: string, semver: string): boolean {
 export function installShuttle() {
     switch (process.platform) {
         case "linux":
-            installShuttleBin(SHUTTLE_LINUX_BIN)
+            installShuttleBin(SHUTTLE_LINUX_TARGET)
             break
         case "darwin":
-            installShuttleBin(SHUTTLE_MAC_BIN)
+            installShuttleBin(SHUTTLE_MAC_TARGET)
             break
         case "win32":
-            installShuttleBin(SHUTTLE_WINDOWS_BIN, ".exe")
+            installShuttleBin(SHUTTLE_WINDOWS_TARGET, ".exe")
             break
         default:
             throw {
@@ -70,7 +70,9 @@ function installShuttleBin(target: string, suffix?: string) {
 
     const cmd = `curl -s -OL ${curlUrl} &&\
     tar -xzf ${archive} ${shuttleBinDir}/${shuttleBin} &&\
-    mv ${shuttleBinDir}/${shuttleBin} ${cargoBinDir} &&\
+    mv ${shuttleBinDir}/${shuttleBin} ${cargoBinDir}/cargo-shuttle${
+        suffix ?? ""
+    } &&\
     rm -rf ${archive} ${shuttleBinDir}`
 
     execSync(cmd, undefined, {
