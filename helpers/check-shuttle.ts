@@ -7,6 +7,7 @@ import {
     SHUTTLE_DOWNLOAD_URL,
     SHUTTLE_LINUX_BIN,
     SHUTTLE_MAC_BIN,
+    SHUTTLE_TAG,
     SHUTTLE_WINDOWS_BIN,
 } from "./constants"
 import satisfies from "semver/functions/satisfies"
@@ -59,13 +60,18 @@ export function installShuttle() {
     }
 }
 
-function installShuttleBin(bin: string, suffix?: string) {
+function installShuttleBin(target: string, suffix?: string) {
     const cargoBinDir = findCargoBinDir()
 
-    const cmd = `curl -s -OL ${SHUTTLE_DOWNLOAD_URL + bin} &&\
-    tar -xzf ${bin} shuttle/cargo-shuttle${suffix ?? ""} &&\
-    mv shuttle/cargo-shuttle${suffix ?? ""} ${cargoBinDir} &&\
-    rm -rf ${bin} shuttle`
+    const archive = `cargo-shuttle-${SHUTTLE_TAG}-${target}.tar.gz`
+    const curlUrl = `${SHUTTLE_DOWNLOAD_URL}${archive}`
+    const shuttleBinDir = `cargo-shuttle-${target}-${SHUTTLE_TAG}`
+    const shuttleBin = `cargo-shuttle-${target}${suffix ?? ""}`
+
+    const cmd = `curl -s -OL ${curlUrl} &&\
+    tar -xzf ${archive} ${shuttleBinDir}/${shuttleBin} &&\
+    mv ${shuttleBinDir}/${shuttleBin} ${cargoBinDir} &&\
+    rm -rf ${archive} ${shuttleBinDir}`
 
     execSync(cmd, undefined, {
         shell: false,
