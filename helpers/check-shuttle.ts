@@ -66,7 +66,7 @@ function installShuttleBin(target: string, suffix?: string) {
     const archive = `cargo-shuttle-${SHUTTLE_TAG}-${target}.tar.gz`
     const curlUrl = `${SHUTTLE_DOWNLOAD_URL}${archive}`
     const shuttleBinDir = `cargo-shuttle-${target}-${SHUTTLE_TAG}`
-    const shuttleBin = `cargo-shuttle-${target}${suffix ?? ""}`
+    const shuttleBin = `cargo-shuttle${suffix ?? ""}`
 
     const cmd = `curl -s -OL ${curlUrl} &&\
     tar -xzf ${archive} ${shuttleBinDir}/${shuttleBin} &&\
