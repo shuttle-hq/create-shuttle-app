@@ -121,11 +121,7 @@ export function installRust() {
         case "win32":
             execSync(
                 `curl -s -OL https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                 ${path.join(
-                     __dirname,
-                     "..",
-                     "rustup-init.exe"
-                 )} --default-toolchain ${RUSTC_VERSION} &&\
+                 rustup-init.exe --default-toolchain ${RUSTC_VERSION} &&\
                  rm -r ${path.join(__dirname, "..", "rustup-init.exe")}`,
                 undefined,
                 {
