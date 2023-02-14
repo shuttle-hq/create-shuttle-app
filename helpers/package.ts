@@ -13,7 +13,7 @@ export function patchPackage(projectPath: string) {
 
     packages["scripts"]["build"] =
         "next build && next export -o ./backend/static && cargo build --manifest-path ./backend/Cargo.toml"
-    packages["scripts"]["login"] =
+    packages["scripts"]["shuttle-login"] =
         "cargo shuttle login --working-directory ./backend/"
     packages["scripts"]["start"] =
         "cargo shuttle project new --working-directory ./backend/"
