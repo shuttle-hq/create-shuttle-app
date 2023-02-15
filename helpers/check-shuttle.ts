@@ -107,6 +107,9 @@ function findCargoBinDir(): string {
  * @throws Will throw an error if the users platform is not windows, mac or linux.
  */
 export function installRust() {
+    // We need the homedir for installing rust on windows
+    const homeDir = os.homedir()
+
     switch (process.platform) {
         case "linux":
             execSync(
@@ -120,9 +123,16 @@ export function installRust() {
             break
         case "win32":
             execSync(
-                `curl -s -OL https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                 rustup-init.exe --default-toolchain ${RUSTC_VERSION} &&\
-                 rm -r ${path.join(__dirname, "..", "rustup-init.exe")}`,
+                `curl -s --create-dirs -O --output-dir ${path.join(
+                    homeDir,
+                    "tmprustup"
+                )} https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
+                ${path.join(
+                    homeDir,
+                    "tmprustup",
+                    "rustup-init.exe"
+                )} --default-toolchain ${RUSTC_VERSION} &&\
+                rm -r ${path.join(homeDir, "tmprustup")}`,
                 undefined,
                 {
                     shell: false,
