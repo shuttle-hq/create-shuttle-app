@@ -17,7 +17,28 @@ For more information on shuttle check out our website: https://www.shuttle.rs/
 This is the first iteration of this CLI so you may encounter some issues at first. Feel free to report this to us on
 [github](https://github.com/shuttle-hq/shuttle), or reach out to us on [Discord](https://discord.gg/shuttle)
 
+## Usage
+
+To install and run the latest version of the `create-shuttle-app` CLI, run this command:
+
+```
+npx create-shuttle-app
+```
+
+The command also takes some optional args:
+
+```
+--ts                               # Initialize the Next.js app as a typescript project.
+--eslint                           # Initialize with eslint config.
+-e, --example [name]|[github-url]  # An example to bootstrap the app with. You can use an example name
+                                    from the official Next.js repo or a GitHub URL. The URL can use
+                                    any branch and/or subdirectory
+--shuttle-example <github-url>     # A GitHub URL to use to bootstrap the shuttle backend with.
+```
+
 ## Commands
+
+After initializing your app, you're ready to deploy it or run it locally.
 
 To deploy your application to the cloud, you need to run the following commands:
 
@@ -31,3 +52,18 @@ If you'd like to develop locally, you can start a next.js dev server as well as 
 shuttle backend with the `npm run dev`
 
 If you wish to stop your deployment: `npm run stop`
+
+## Windows troubleshooting
+
+`create-shuttle-app` will install Rust and the `cargo-shuttle` crate with install scripts.
+It will try to do this automatically, but it may fail, and you might want to do this yourself.
+The install scripts may also cause PowerShell to not be able to run `create-shuttle-app`, since
+it disallows scripts by default. To override this, run the `set-executionpolicy remotesigned`
+command in a PowerShell started in administrator mode. Or use Git Bash, which doesn't restrict
+this.
+
+If you want to install dependencies for `create-shuttle-app` manually, these are the required 
+native dependencies:
+
+- Rust version 1.65: https://www.rust-lang.org/tools/install
+- cargo-shuttle latest version: https://docs.shuttle.rs/introduction/installation
