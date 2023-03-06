@@ -1,7 +1,7 @@
 export const RUSTC_VERSION = "1.65.0"
-export const SHUTTLE_VERSION = "0.10.0"
+export const SHUTTLE_VERSION = "0.11.2"
 
-export const SHUTTLE_TAG = "v0.10.0"
+export const SHUTTLE_TAG = "v0.11.2"
 export const SHUTTLE_DOWNLOAD_URL = `https://github.com/shuttle-hq/shuttle/releases/download/${SHUTTLE_TAG}/`
 
 export const SHUTTLE_LINUX_TARGET = `x86_64-unknown-linux-gnu`
