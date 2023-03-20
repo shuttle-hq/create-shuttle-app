@@ -85,12 +85,13 @@ const program = new Commander.Command(packageJson.name)
     .parse(process.argv)
 
 async function run(): Promise<void> {
-    if (!checkInstalled("rustc", RUSTC_VERSION)) {
+    if (!checkInstalled("rustc", `>=${RUSTC_VERSION}`)) {
         const res = await prompts({
             type: "confirm",
             name: "installRustup",
             initial: true,
-            message: `create-shuttle-app requires Rust v${RUSTC_VERSION}, do you wish to install it now?`,
+            message: `create-shuttle-app requires a Rust version greater than or equal to ${RUSTC_VERSION}, 
+            do you wish to install it now?`,
         })
 
         if (res.installRustup) {

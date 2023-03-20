@@ -30,7 +30,7 @@ export function checkInstalled(dependency: string, semver: string): boolean {
         .toString()
         .split(" ")[1]
 
-    return satisfies(semver, installedVersion)
+    return satisfies(installedVersion, semver)
 }
 
 /**
