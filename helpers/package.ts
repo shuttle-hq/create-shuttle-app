@@ -97,6 +97,7 @@ const transformer =
     (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
         let foundUnoptimized = false
         let foundImages = false
+        let foundTrailingSlash = false
 
         // This is where things start, we are basically visiting a file with the following statements
         //
@@ -155,6 +156,15 @@ const transformer =
                     node,
                     node.properties.concat(get_images_property())
                 )
+            }
+
+            // Add trailingSlash if it is missing after going through all the properties
+            if (!foundTrailingSlash && ts.isObjectLiteralExpression(node)) {
+                node = ts.factory.updateObjectLiteralExpression(
+                    node,
+                    node.properties.concat(get_trailing_slash_property())
+                )
+                foundTrailingSlash = true
             }
 
             return node
@@ -227,6 +237,7 @@ function get_unoptimized_property(): ts.PropertyAssignment {
         ts.factory.createTrue()
     )
 }
+
 function get_images_property(): ts.PropertyAssignment {
     return ts.factory.createPropertyAssignment(
         "images",
@@ -234,5 +245,12 @@ function get_images_property(): ts.PropertyAssignment {
             [get_unoptimized_property()],
             true
         )
+    )
+}
+
+function get_trailing_slash_property(): ts.PropertyAssignment {
+    return ts.factory.createPropertyAssignment(
+        "trailingSlash",
+        ts.factory.createTrue()
     )
 }
