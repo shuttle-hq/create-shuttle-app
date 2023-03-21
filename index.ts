@@ -9,6 +9,7 @@ import {
     installRust,
     installShuttle,
     checkInstalled,
+    installProtoc,
 } from "./helpers/check-shuttle"
 import {
     appendUniqueSuffix,
@@ -23,6 +24,7 @@ import {
     RUSTC_VERSION,
     SHUTTLE_VERSION,
     SHUTTLE_EXAMPLE_URL,
+    PROTOC_VERSION,
 } from "./helpers/constants"
 
 let projectPath = ""
@@ -98,7 +100,27 @@ async function run(): Promise<void> {
             installRust()
         } else {
             throw {
-                error: "rustup is required",
+                error: `Rust is required to use shuttle, please refer to https://www.rust-lang.org/tools/install
+                for installation instructions.`,
+            }
+        }
+    }
+
+    if (!checkInstalled("protoc", `>=${PROTOC_VERSION}`)) {
+        const res = await prompts({
+            type: "confirm",
+            name: "installProtoc",
+            initial: true,
+            message: `create-shuttle-app requires a Protoc version greater than or equal to ${PROTOC_VERSION}, 
+            do you wish to install it now?`,
+        })
+
+        if (res.installProtoc) {
+            installProtoc()
+        } else {
+            throw {
+                error: `Protoc is required to use shuttle, please refer to https://docs.shuttle.rs/support/installing-protoc
+                for installation instructions.`,
             }
         }
     }
@@ -115,7 +137,8 @@ async function run(): Promise<void> {
             installShuttle()
         } else {
             throw {
-                error: "shuttle is required",
+                error: `Installing shuttle is required to use create-shuttle-app, please refer to https://docs.shuttle.rs/introduction/installation
+                for installation instructions.`,
             }
         }
     }
