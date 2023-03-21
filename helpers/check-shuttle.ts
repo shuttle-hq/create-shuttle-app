@@ -55,7 +55,8 @@ export function installShuttle() {
                 error: `create-shuttle-app can't install cargo-shuttle automatically 
                     on: ${chalk.red(process.platform)}\n Refer to 
                     "https://docs.shuttle.rs/introduction/installation" for instructions 
-                    on installing cargo-shuttle manually.`,
+                    on installing cargo-shuttle manually. After installing cargo-shuttle, 
+                    please run create-shuttle-app again`,
             }
     }
 }
@@ -145,7 +146,7 @@ export function installRust() {
                 error: `create-shuttle-app can't install Rust automatically 
                     on: ${chalk.red(process.platform)} \n
                     Refer to "https://www.rust-lang.org/tools/install" for instructions 
-                    on installing rust for your operating system.`,
+                    on installing rust for your operating system. After installing Rust, please run create-shuttle-app again`,
             }
     }
 }
@@ -196,14 +197,16 @@ export function installProtoc() {
                 error: `create-shuttle-app can't install Protoc automatically 
                     on: ${chalk.red("Windows")} \n
                     Please refer to our install instructions
-                    for Windows here: https://docs.shuttle.rs/support/installing-protoc#windows`,
+                    for Windows here: https://docs.shuttle.rs/support/installing-protoc#windows.
+                    After installing protoc, please run create-shuttle-app again.`,
             }
         default:
             throw {
                 error: `create-shuttle-app can't install Protoc automatically 
                     on: ${chalk.red(process.platform)} \n
                     Refer to "https://grpc.io/docs/protoc-installation/#install-pre-compiled-binaries-any-os" 
-                    for instructions on installing protoc for your operating system.`,
+                    for instructions on installing protoc for your operating system.
+                    After installing protoc, please run create-shuttle-app again`,
             }
     }
 }

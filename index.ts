@@ -101,7 +101,7 @@ async function run(): Promise<void> {
         } else {
             throw {
                 error: `Rust is required to use shuttle, please refer to https://www.rust-lang.org/tools/install
-                for installation instructions.`,
+                for installation instructions. After installing Rust, please run create-shuttle-app again.`,
             }
         }
     }
@@ -120,7 +120,7 @@ async function run(): Promise<void> {
         } else {
             throw {
                 error: `Protoc is required to use shuttle, please refer to https://docs.shuttle.rs/support/installing-protoc
-                for installation instructions.`,
+                for installation instructions. After installing protoc, please run create-shuttle-app again.`,
             }
         }
     }
@@ -137,8 +137,8 @@ async function run(): Promise<void> {
             installShuttle()
         } else {
             throw {
-                error: `Installing shuttle is required to use create-shuttle-app, please refer to https://docs.shuttle.rs/introduction/installation
-                for installation instructions.`,
+                error: `Installing cargo-shuttle is required to use create-shuttle-app, please refer to https://docs.shuttle.rs/introduction/installation
+                for installation instructions. After installing cargo-shuttle, please run create-shuttle-app again.`,
             }
         }
     }
