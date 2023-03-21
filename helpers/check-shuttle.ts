@@ -30,7 +30,7 @@ export function checkInstalled(dependency: string, semver: string): boolean {
         .toString()
         .split(" ")[1]
 
-    return satisfies(semver, installedVersion)
+    return satisfies(installedVersion, semver)
 }
 
 /**
@@ -55,7 +55,8 @@ export function installShuttle() {
                 error: `create-shuttle-app can't install cargo-shuttle automatically 
                     on: ${chalk.red(process.platform)}\n Refer to 
                     "https://docs.shuttle.rs/introduction/installation" for instructions 
-                    on installing cargo-shuttle manually.`,
+                    on installing cargo-shuttle manually. After installing cargo-shuttle, 
+                    please run create-shuttle-app again`,
             }
     }
 }
@@ -145,7 +146,67 @@ export function installRust() {
                 error: `create-shuttle-app can't install Rust automatically 
                     on: ${chalk.red(process.platform)} \n
                     Refer to "https://www.rust-lang.org/tools/install" for instructions 
-                    on installing rust for your operating system.`,
+                    on installing rust for your operating system. After installing Rust, please run create-shuttle-app again`,
+            }
+    }
+}
+
+/**
+ * Installs protoc.
+ * @throws Will throw an error if the users platform is not mac or linux,
+ * or if their cpu arch is not x86_64 or arm64.
+ */
+export function installProtoc() {
+    let arch: string
+
+    switch (os.arch()) {
+        case "arm64":
+            arch = "aarch_64"
+            break
+        case "x64":
+            arch = "x86_64"
+            break
+        default:
+            throw {
+                error: `create-shuttle-app can't install Protoc
+                    on: ${chalk.red(os.arch())} \n
+                    Refer to "https://grpc.io/docs/protoc-installation/#install-pre-compiled-binaries-any-os" 
+                    for instructions on installing protoc for your operating system.`,
+            }
+    }
+
+    switch (process.platform) {
+        case "linux":
+            execSync(
+                `curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v21.9/protoc-21.9-linux-${arch}.zip &&\
+                    sudo unzip -o protoc-21.9-linux-${arch}.zip -d /usr/local bin/protoc &&\
+                    sudo unzip -o protoc-21.9-linux-${arch}.zip -d /usr/local 'include/*' &&\
+                    rm -f protoc-21.9-linux-${arch}.zip`
+            )
+            break
+        case "darwin":
+            execSync(
+                `curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v21.9/protoc-21.9-osx-${arch}.zip &&\
+                    sudo unzip -o protoc-21.9-osx-${arch}.zip -d /usr/local bin/protoc &&\
+                    sudo unzip -o protoc-21.9-osx-${arch}.zip -d /usr/local 'include/*' &&\
+                    rm -f protoc-21.9-osx-${arch}.zip`
+            )
+            break
+        case "win32":
+            throw {
+                error: `create-shuttle-app can't install Protoc automatically 
+                    on: ${chalk.red("Windows")} \n
+                    Please refer to our install instructions
+                    for Windows here: https://docs.shuttle.rs/support/installing-protoc#windows.
+                    After installing protoc, please run create-shuttle-app again.`,
+            }
+        default:
+            throw {
+                error: `create-shuttle-app can't install Protoc automatically 
+                    on: ${chalk.red(process.platform)} \n
+                    Refer to "https://grpc.io/docs/protoc-installation/#install-pre-compiled-binaries-any-os" 
+                    for instructions on installing protoc for your operating system.
+                    After installing protoc, please run create-shuttle-app again`,
             }
     }
 }
