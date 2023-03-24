@@ -25,7 +25,6 @@ import {
     SHUTTLE_VERSION,
     SHUTTLE_EXAMPLE_URL,
     PROTOC_VERSION,
-    PROTOC_VERSION_SHORT,
 } from "./helpers/constants"
 
 let projectPath = ""
@@ -110,7 +109,7 @@ async function run(): Promise<void> {
     if (
         !checkInstalled(
             "protoc",
-            `>=${PROTOC_VERSION} || >=${PROTOC_VERSION_SHORT}`
+            `>=${PROTOC_VERSION} || >=${PROTOC_VERSION.substring(2)}`
         )
     ) {
         const res = await prompts({
