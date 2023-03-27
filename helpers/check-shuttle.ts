@@ -8,6 +8,7 @@ import {
     SHUTTLE_LINUX_TARGET,
     SHUTTLE_MAC_TARGET,
     SHUTTLE_TAG,
+    SHUTTLE_VERSION,
     SHUTTLE_WINDOWS_TARGET,
 } from "./constants"
 import satisfies from "semver/functions/satisfies"
@@ -56,7 +57,20 @@ export function installShuttle() {
             installShuttleBin(SHUTTLE_MAC_TARGET)
             break
         case "win32":
-            installShuttleBin(SHUTTLE_WINDOWS_TARGET, ".exe")
+            // Check if the user has the coreutils commands needed for the installShuttleBin
+            // function. If not, run cargo install.
+            if (commandExists("mv") && commandExists("rm")) {
+                installShuttleBin(SHUTTLE_WINDOWS_TARGET, ".exe")
+            } else {
+                execSync(
+                    "cargo",
+                    ["install", "cargo-shuttle", "--version", SHUTTLE_VERSION],
+                    {
+                        shell: false,
+                        stdio: ["ignore", "inherit", "pipe"],
+                    }
+                )
+            }
             break
         default:
             throw {
@@ -69,6 +83,9 @@ export function installShuttle() {
     }
 }
 
+/**
+ * Install the cargo-shuttle binary from the release distributions.
+ */
 function installShuttleBin(target: string, suffix?: string) {
     const cargoBinDir = findCargoBinDir()
 
@@ -89,6 +106,7 @@ function installShuttleBin(target: string, suffix?: string) {
         stdio: ["ignore", "inherit", "pipe"],
     })
 }
+
 /**
  * Looks for the cargo home directory in the default location, and if it's not there
  * try the `CARGO_HOME` environment variable.
