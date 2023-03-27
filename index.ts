@@ -106,7 +106,12 @@ async function run(): Promise<void> {
         }
     }
 
-    if (!checkInstalled("protoc", `>=${PROTOC_VERSION}`)) {
+    if (
+        !checkInstalled(
+            "protoc",
+            `>=${PROTOC_VERSION} || >=${PROTOC_VERSION.substring(2)}`
+        )
+    ) {
         const res = await prompts({
             type: "confirm",
             name: "installProtoc",

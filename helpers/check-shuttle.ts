@@ -26,9 +26,17 @@ export function checkInstalled(dependency: string, semver: string): boolean {
         return false
     }
 
-    const installedVersion = execSync(`${dependency} --version`)
+    let installedVersion = execSync(`${dependency} --version`)
         .toString()
         .split(" ")[1]
+
+    // Hacky weekend fix for cases where `protoc --version` returns "libprotoc 22.2" (missing major version)
+    if (
+        dependency === "protoc" &&
+        (installedVersion.match(/\./g) || []).length !== 2
+    ) {
+        installedVersion = "3." + installedVersion
+    }
 
     return satisfies(installedVersion, semver)
 }
