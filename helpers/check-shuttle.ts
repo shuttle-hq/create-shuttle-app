@@ -155,12 +155,12 @@ export function installRust() {
                     homeDir,
                     "tmprustup"
                 )} https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                    ${path.join(
-                        homeDir,
-                        "tmprustup",
-                        "rustup-init.exe"
-                    )} --default-toolchain ${RUSTC_VERSION} &&\
-                    ${windowsRmCommand} ${path.join(homeDir, "tmprustup")}`,
+                ${path.join(
+                    homeDir,
+                    "tmprustup",
+                    "rustup-init.exe"
+                )} --default-toolchain ${RUSTC_VERSION} &&\
+                ${windowsRmCommand} ${path.join(homeDir, "tmprustup")}`,
                 undefined,
                 {
                     shell: false,
