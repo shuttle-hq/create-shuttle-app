@@ -149,23 +149,43 @@ export function installRust() {
             )
             break
         case "win32":
-            execSync(
-                `curl -s --create-dirs -O --output-dir ${path.join(
-                    homeDir,
-                    "tmprustup"
-                )} https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
-                ${path.join(
-                    homeDir,
-                    "tmprustup",
-                    "rustup-init.exe"
-                )} --default-toolchain ${RUSTC_VERSION} &&\
-                rm -r ${path.join(homeDir, "tmprustup")}`,
-                undefined,
-                {
-                    shell: false,
-                    stdio: ["inherit", "inherit", "pipe"],
-                }
-            )
+            if (commandExists("rm")) {
+                execSync(
+                    `curl -s --create-dirs -O --output-dir ${path.join(
+                        homeDir,
+                        "tmprustup"
+                    )} https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
+                    ${path.join(
+                        homeDir,
+                        "tmprustup",
+                        "rustup-init.exe"
+                    )} --default-toolchain ${RUSTC_VERSION} &&\
+                    rm -r ${path.join(homeDir, "tmprustup")}`,
+                    undefined,
+                    {
+                        shell: false,
+                        stdio: ["inherit", "inherit", "pipe"],
+                    }
+                )
+            } else {
+                execSync(
+                    `curl -s --create-dirs -O --output-dir ${path.join(
+                        homeDir,
+                        "tmprustup"
+                    )} https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe &&\
+                    ${path.join(
+                        homeDir,
+                        "tmprustup",
+                        "rustup-init.exe"
+                    )} --default-toolchain ${RUSTC_VERSION} &&\
+                    rd /s /q ${path.join(homeDir, "tmprustup")}`,
+                    undefined,
+                    {
+                        shell: false,
+                        stdio: ["inherit", "inherit", "pipe"],
+                    }
+                )
+            }
             break
         default:
             throw {
