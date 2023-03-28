@@ -136,6 +136,7 @@ function findCargoBinDir(): string {
 export function installRust() {
     // We need the homedir for installing rust on windows
     const homeDir = os.homedir()
+    const windowsRmCommand = commandExists("rm") ? "rm -r" : "rd /s /q"
 
     switch (process.platform) {
         case "linux":
@@ -159,13 +160,14 @@ export function installRust() {
                     "tmprustup",
                     "rustup-init.exe"
                 )} --default-toolchain ${RUSTC_VERSION} &&\
-                rm -r ${path.join(homeDir, "tmprustup")}`,
+                ${windowsRmCommand} ${path.join(homeDir, "tmprustup")}`,
                 undefined,
                 {
                     shell: false,
                     stdio: ["inherit", "inherit", "pipe"],
                 }
             )
+
             break
         default:
             throw {
