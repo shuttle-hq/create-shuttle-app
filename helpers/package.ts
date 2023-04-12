@@ -16,13 +16,13 @@ export function patchPackage(projectPath: string) {
     packages["scripts"]["shuttle-login"] =
         "cargo shuttle login --working-directory ./backend/"
     packages["scripts"]["start"] =
-        "cargo shuttle project new --working-directory ./backend/"
+        "cargo shuttle project start --working-directory ./backend/"
     packages["scripts"]["deploy"] =
         "npm run build && cargo shuttle deploy --working-directory ./backend/ --allow-dirty"
     packages["scripts"]["dev"] =
         'npm run build && concurrently --names "next, shuttle" --kill-others "next dev" "cargo shuttle run --working-directory ./backend/"'
     packages["scripts"]["stop"] =
-        "cargo shuttle project rm --working-directory ./backend/"
+        "cargo shuttle project stop --working-directory ./backend/"
 
     const newData = JSON.stringify(packages, null, 4)
     writeFileSync(packagesPath, newData)
