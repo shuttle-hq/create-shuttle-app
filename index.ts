@@ -24,6 +24,7 @@ import {
     RUSTC_VERSION,
     SHUTTLE_VERSION,
     SHUTTLE_EXAMPLE_URL,
+    SHUTTLE_SAAS_URL,
     PROTOC_VERSION,
 } from "./helpers/constants"
 
@@ -83,6 +84,13 @@ const program = new Commander.Command(packageJson.name)
   A GitHub URL to use to bootstrap the shuttle backend with.
 `
     )
+    .option(
+    "--template <type>",
+    `
+  Use a premade Shuttle-provided template.
+    `
+ 
+)
     .allowUnknownOption(false)
     .parse(process.argv)
 
@@ -110,8 +118,7 @@ async function run(): Promise<void> {
         !checkInstalled(
             "protoc",
             `>=${PROTOC_VERSION} || >=${PROTOC_VERSION.substring(2)}`
-        )
-    ) {
+    )) {
         const res = await prompts({
             type: "confirm",
             name: "installProtoc",
@@ -192,6 +199,45 @@ async function run(): Promise<void> {
         }
     }
 
+    if (program.opts().template == "saas") {
+        cloneExample({
+            repository: SHUTTLE_SAAS_URL,
+            projectPath: resolvedProjectPath
+        });
+
+        const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
+        createShuttleToml(shuttleProjectName, shuttleProjectPath)
+        
+    
+    
+    const shuttleOrange = chalk.hex("#ff8a3f")
+    console.log(
+        shuttleOrange(`
+     ____  _           _   _   _
+    / ___|| |__  _   _| |_| |_| | ___
+    \\___ \\| '_ \\| | | | __| __| |/ _ \\
+     ___) | | | | |_| | |_| |_| |  __/
+    |____/|_| |_|\\__,_|\\__|\\__|_|\\___|
+    `)
+    )
+    console.log(`
+To deploy your new SaaS application to the cloud, you need to run the following commands:
+
+First, login: ${chalk.bold(`npm run shuttle-login`)}
+
+Set any secrets you'd like to use in a Secrets.toml file in the root of your backend folder. You can read more about this here: https://docs.shuttle.rs/resources/shuttle-secrets
+
+Start your project container: ${chalk.bold(`npm run start`)} 
+
+And that's it! When you're ready to deploy: ${chalk.bold(`npm run deploy`)}
+
+If you'd like to develop locally, you can start a next.js dev server as well as your
+shuttle backend with the ${chalk.bold("npm run dev")} command.`)
+
+return
+}
+
+    
     const args = []
 
     if (program.javascript) {

@@ -12,3 +12,6 @@ export const SHUTTLE_WINDOWS_TARGET = `x86_64-pc-windows-msvc`
 
 export const SHUTTLE_EXAMPLE_URL =
     "https://github.com/shuttle-hq/shuttle-examples/axum/static-next-server"
+
+export const SHUTTLE_SAAS_URL = 
+    "https://github.com/joshua-mo-143/shuttle-saas-example"
