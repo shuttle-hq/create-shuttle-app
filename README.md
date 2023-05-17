@@ -34,6 +34,7 @@ The command also takes some optional args:
                                     from the official Next.js repo or a GitHub URL. The URL can use
                                     any branch and/or subdirectory
 --shuttle-example <github-url>     # A GitHub URL to use to bootstrap the shuttle backend with.
+--template                         # Initialise using a provided Shuttle template (current supported values: "saas")
 ```
 
 ## Commands
