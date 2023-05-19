@@ -199,6 +199,8 @@ async function run(): Promise<void> {
         }
     }
 
+    let fullstackExample = false
+
     if (program.fullstackExample == "saas") {
         await cloneExample({
             repository: SHUTTLE_SAAS_URL,
@@ -206,7 +208,16 @@ async function run(): Promise<void> {
         })
 
         createShuttleToml(shuttleProjectName, resolvedProjectPath)
+        fullstackExample = true
     } else {
+        console.error(
+            "The provided fullstack example is not known. Please provide a supported example."
+        )
+        console.log("Currently supported examples: saas")
+        return
+    }
+
+    if (!fullstackExample) {
         const args = []
 
         if (program.javascript) {
@@ -249,6 +260,7 @@ async function run(): Promise<void> {
         patchPackage(resolvedProjectPath)
         patchNextConfig(resolvedProjectPath)
     }
+
     const shuttleOrange = chalk.hex("#ff8a3f")
     console.log(
         shuttleOrange(`
