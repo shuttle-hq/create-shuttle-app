@@ -54,6 +54,17 @@ shuttle backend with the `npm run dev`
 
 If you wish to stop your deployment: `npm run stop`
 
+## Contributing
+
+If you're looking to contribute, you can quickly test any changes you've made by running the following:
+
+```yarn release
+yarn copy-assets
+node dist/index.js 
+```
+
+This builds a local release of the package, copies the required assets to be able to run it locally and then runs it locally.
+
 ## Windows troubleshooting
 
 `create-shuttle-app` will install Rust and the `cargo-shuttle` crate with install scripts.

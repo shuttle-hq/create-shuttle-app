@@ -26,7 +26,7 @@ export async function cloneExample({
     const response = await fetch(repository).catch((error) => {
         throw {
             error: `Failed to clone shuttle example from "${repository}"`,
-            problems: [error],
+            problems: [JSON.stringify(error)],
         }
     })
 
@@ -89,7 +89,7 @@ export async function cloneExample({
     } catch (error) {
         throw {
             error: "Failed to extract template",
-            problems: [error],
+            problems: [JSON.stringify(error)],
         }
     }
 }

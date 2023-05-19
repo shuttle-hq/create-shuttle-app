@@ -85,12 +85,11 @@ const program = new Commander.Command(packageJson.name)
 `
     )
     .option(
-    "--template <type>",
-    `
+        "--fullstack-example <type>",
+        `
   Use a premade Shuttle-provided template.
     `
- 
-)
+    )
     .allowUnknownOption(false)
     .parse(process.argv)
 
@@ -118,7 +117,8 @@ async function run(): Promise<void> {
         !checkInstalled(
             "protoc",
             `>=${PROTOC_VERSION} || >=${PROTOC_VERSION.substring(2)}`
-    )) {
+        )
+    ) {
         const res = await prompts({
             type: "confirm",
             name: "installProtoc",
@@ -199,87 +199,56 @@ async function run(): Promise<void> {
         }
     }
 
-    if (program.opts().template == "saas") {
-        cloneExample({
+    if (program.fullstackExample == "saas") {
+        await cloneExample({
             repository: SHUTTLE_SAAS_URL,
-            projectPath: resolvedProjectPath
-        });
+            projectPath: resolvedProjectPath,
+        })
 
+        createShuttleToml(shuttleProjectName, resolvedProjectPath)
+    } else {
+        const args = []
+
+        if (program.javascript) {
+            args.push("--js")
+        }
+
+        if (program.typescript) {
+            args.push("--ts")
+        }
+
+        if (program.example) {
+            args.push("--example", program.example)
+        }
+
+        if (program.eslint) {
+            args.push("--eslint")
+        }
+
+        args.push(resolvedProjectPath)
+
+        // If the user is on windows, we need to prefix the create-next-app cmd with node
+        const createNextAppCmd = `${
+            process.platform === "win32" ? "node " : ""
+        }${path.join(__dirname, "create-next-app")}`
+
+        execSync(createNextAppCmd, args, {
+            shell: false,
+            stdio: ["inherit", "inherit", "pipe"],
+        })
+
+        const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
         const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
-        createShuttleToml(shuttleProjectName, shuttleProjectPath)
-        
-    
-    
-    const shuttleOrange = chalk.hex("#ff8a3f")
-    console.log(
-        shuttleOrange(`
-     ____  _           _   _   _
-    / ___|| |__  _   _| |_| |_| | ___
-    \\___ \\| '_ \\| | | | __| __| |/ _ \\
-     ___) | | | | |_| | |_| |_| |  __/
-    |____/|_| |_|\\__,_|\\__|\\__|_|\\___|
-    `)
-    )
-    console.log(`
-To deploy your new SaaS application to the cloud, you need to run the following commands:
+        await cloneExample({
+            repository,
+            projectPath: shuttleProjectPath,
+        })
 
-First, login: ${chalk.bold(`npm run shuttle-login`)}
+        createShuttleToml(shuttleProjectName, resolvedProjectPath)
 
-Set any secrets you'd like to use in a Secrets.toml file in the root of your backend folder. You can read more about this here: https://docs.shuttle.rs/resources/shuttle-secrets
-
-Start your project container: ${chalk.bold(`npm run start`)} 
-
-And that's it! When you're ready to deploy: ${chalk.bold(`npm run deploy`)}
-
-If you'd like to develop locally, you can start a next.js dev server as well as your
-shuttle backend with the ${chalk.bold("npm run dev")} command.`)
-
-return
-}
-
-    
-    const args = []
-
-    if (program.javascript) {
-        args.push("--js")
+        patchPackage(resolvedProjectPath)
+        patchNextConfig(resolvedProjectPath)
     }
-
-    if (program.typescript) {
-        args.push("--ts")
-    }
-
-    if (program.example) {
-        args.push("--example", program.example)
-    }
-
-    if (program.eslint) {
-        args.push("--eslint")
-    }
-
-    args.push(resolvedProjectPath)
-
-    // If the user is on windows, we need to prefix the create-next-app cmd with node
-    const createNextAppCmd = `${
-        process.platform === "win32" ? "node " : ""
-    }${path.join(__dirname, "create-next-app")}`
-
-    execSync(createNextAppCmd, args, {
-        shell: false,
-        stdio: ["inherit", "inherit", "pipe"],
-    })
-
-    const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
-    const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
-    await cloneExample({
-        repository,
-        projectPath: shuttleProjectPath,
-    })
-
-    createShuttleToml(shuttleProjectName, resolvedProjectPath)
-
-    patchPackage(resolvedProjectPath)
-    patchNextConfig(resolvedProjectPath)
-
     const shuttleOrange = chalk.hex("#ff8a3f")
     console.log(
         shuttleOrange(`
