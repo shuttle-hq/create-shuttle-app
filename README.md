@@ -34,6 +34,7 @@ The command also takes some optional args:
                                     from the official Next.js repo or a GitHub URL. The URL can use
                                     any branch and/or subdirectory
 --shuttle-example <github-url>     # A GitHub URL to use to bootstrap the shuttle backend with.
+--fullstack-example                # Initialise using a provided full-stack Shuttle template (current supported values: "saas")
 ```
 
 ## Commands
@@ -52,6 +53,17 @@ If you'd like to develop locally, you can start a next.js dev server as well as 
 shuttle backend with the `npm run dev`
 
 If you wish to stop your deployment: `npm run stop`
+
+## Contributing
+
+If you're looking to contribute, you can quickly test any changes you've made by running the following:
+
+```yarn release
+yarn copy-assets
+node dist/index.js 
+```
+
+This builds a local release of the package, copies the required assets to be able to run it locally and then runs it locally.
 
 ## Windows troubleshooting
 

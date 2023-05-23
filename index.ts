@@ -24,6 +24,7 @@ import {
     RUSTC_VERSION,
     SHUTTLE_VERSION,
     SHUTTLE_EXAMPLE_URL,
+    SHUTTLE_SAAS_URL,
     PROTOC_VERSION,
 } from "./helpers/constants"
 
@@ -82,6 +83,12 @@ const program = new Commander.Command(packageJson.name)
         `
   A GitHub URL to use to bootstrap the shuttle backend with.
 `
+    )
+    .option(
+        "--fullstack-example <type>",
+        `
+  Use a premade Shuttle-provided template.
+    `
     )
     .allowUnknownOption(false)
     .parse(process.argv)
@@ -192,47 +199,67 @@ async function run(): Promise<void> {
         }
     }
 
-    const args = []
+    let fullstackExample = false
 
-    if (program.javascript) {
-        args.push("--js")
+    if (program.fullstackExample == "saas") {
+        await cloneExample({
+            repository: SHUTTLE_SAAS_URL,
+            projectPath: resolvedProjectPath,
+        })
+
+        createShuttleToml(shuttleProjectName, resolvedProjectPath)
+        fullstackExample = true
+    } else {
+        console.error(
+            "The provided fullstack example is not known. Please provide a supported example."
+        )
+        console.log("Currently supported examples: saas")
+        return
     }
 
-    if (program.typescript) {
-        args.push("--ts")
+    if (!fullstackExample) {
+        const args = []
+
+        if (program.javascript) {
+            args.push("--js")
+        }
+
+        if (program.typescript) {
+            args.push("--ts")
+        }
+
+        if (program.example) {
+            args.push("--example", program.example)
+        }
+
+        if (program.eslint) {
+            args.push("--eslint")
+        }
+
+        args.push(resolvedProjectPath)
+
+        // If the user is on windows, we need to prefix the create-next-app cmd with node
+        const createNextAppCmd = `${
+            process.platform === "win32" ? "node " : ""
+        }${path.join(__dirname, "create-next-app")}`
+
+        execSync(createNextAppCmd, args, {
+            shell: false,
+            stdio: ["inherit", "inherit", "pipe"],
+        })
+
+        const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
+        const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
+        await cloneExample({
+            repository,
+            projectPath: shuttleProjectPath,
+        })
+
+        createShuttleToml(shuttleProjectName, resolvedProjectPath)
+
+        patchPackage(resolvedProjectPath)
+        patchNextConfig(resolvedProjectPath)
     }
-
-    if (program.example) {
-        args.push("--example", program.example)
-    }
-
-    if (program.eslint) {
-        args.push("--eslint")
-    }
-
-    args.push(resolvedProjectPath)
-
-    // If the user is on windows, we need to prefix the create-next-app cmd with node
-    const createNextAppCmd = `${
-        process.platform === "win32" ? "node " : ""
-    }${path.join(__dirname, "create-next-app")}`
-
-    execSync(createNextAppCmd, args, {
-        shell: false,
-        stdio: ["inherit", "inherit", "pipe"],
-    })
-
-    const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
-    const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
-    await cloneExample({
-        repository,
-        projectPath: shuttleProjectPath,
-    })
-
-    createShuttleToml(shuttleProjectName, resolvedProjectPath)
-
-    patchPackage(resolvedProjectPath)
-    patchNextConfig(resolvedProjectPath)
 
     const shuttleOrange = chalk.hex("#ff8a3f")
     console.log(
