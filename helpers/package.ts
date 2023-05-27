@@ -47,7 +47,7 @@ export function patchNuxtPackage(projectPath: string) {
     const packages = JSON.parse(data.toString())
     
     packages["scripts"]["build"] =
-        "npx nuxi generate && cargo build --manifest-path ./backend/Cargo.toml"
+        "npx nuxi generate && cp -R ./.output/public ./backend/static && cargo build --manifest-path ./backend/Cargo.toml"
     packages["scripts"]["shuttle-login"] =
         "cargo shuttle login --working-directory ./backend/"
     packages["scripts"]["start"] =
