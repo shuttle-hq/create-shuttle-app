@@ -41,6 +41,42 @@ export function patchPackage(projectPath: string) {
     execSync(packageManager, args, { cwd: projectPath })
 }
 
+export function patchNuxtPackage(projectPath: string) {
+    const packagesPath = path.join(projectPath, "package.json")
+    const data = readFileSync(packagesPath)
+    const packages = JSON.parse(data.toString())
+    
+    packages["scripts"]["build"] =
+        "npx nuxi generate && cargo build --manifest-path ./backend/Cargo.toml"
+    packages["scripts"]["shuttle-login"] =
+        "cargo shuttle login --working-directory ./backend/"
+    packages["scripts"]["start"] =
+        "cargo shuttle project start --working-directory ./backend/"
+    packages["scripts"]["deploy"] =
+        "npm run build && cargo shuttle deploy --working-directory ./backend/ --allow-dirty"
+    packages["scripts"]["dev"] =
+        'npm run build && concurrently --names "next, shuttle" --kill-others "npx nuxi dev" "cargo shuttle run --working-directory ./backend/"'
+    packages["scripts"]["stop"] =
+        "cargo shuttle project stop --working-directory ./backend/"
+        
+    const newData = JSON.stringify(packages, null, 4)
+    writeFileSync(packagesPath, newData)
+    
+    // Install using native package manager
+    const packageManager = getPkgManager()
+    const args = []
+    
+    if (packageManager === "yarn") {
+        args.push("add", "--dev")
+    }
+    else {
+        args.push("install", "--save-dev")
+    }
+    
+    args.push("concurrently")
+    execSync(packageManager, args, { cwd: projectPath })
+}
+
 // Shamelessly copied, because ncc means I cannot access it from create-next-app even though it's a dev dependency, from
 // https://github.com/vercel/next.js/blob/fe2d26fcf41de7a749b8e8d2d89e3a5924f327bf/packages/create-next-app/helpers/get-pkg-manager.ts
 type PackageManager = "npm" | "pnpm" | "yarn"
@@ -92,6 +128,52 @@ module.exports = nextConfig
         )
     }
 }
+
+export function patchNuxtConfig(projectPath: string) {
+    const configPath = path.join(projectPath, "nuxt.config.ts")
+    console.log(configPath)
+    if (existsSync(configPath)) {
+        const source = ts.createSourceFile(
+            "nuxt.config.ts",
+            readFileSync(configPath).toString(),
+            ts.ScriptTarget.ES5
+        )
+        // stringify source
+        
+        const stringifiedSource = JSON.stringify(source)
+        
+        //const result = ts.transform(source, [transformer])
+        //const newSource = ts.createPrinter().printFile(result.transformed[0])
+        writeFileSync(
+            configPath,
+            `
+export default defineNuxtConfig({
+    nitro: {
+        prerender: {
+        crawlLinks: true
+        }
+    },
+})
+`       )
+    } else {
+        writeFileSync(
+            configPath,
+            `
+export default defineNuxtConfig({
+    nitro: {
+        prerender: {
+        crawlLinks: true
+        }
+    },
+    generate: {
+        dir: './backend/static'
+      }
+})
+`
+        )
+    }
+}
+
 
 const transformer =
     (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {

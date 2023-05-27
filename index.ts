@@ -19,7 +19,7 @@ import {
 import { isPathSafe } from "./helpers/is-path-safe"
 import { cloneExample } from "./helpers/git"
 import { execSync } from "./helpers/process"
-import { patchNextConfig, patchPackage } from "./helpers/package"
+import { patchNextConfig, patchNuxtConfig, patchNuxtPackage, patchPackage } from "./helpers/package"
 import {
     RUSTC_VERSION,
     SHUTTLE_VERSION,
@@ -68,6 +68,12 @@ const program = new Commander.Command(packageJson.name)
         "--eslint",
         `
   Initialize with eslint config.
+`
+    )
+    .option(
+        "--nuxt",
+        `
+    Initialize with Nuxt.js.
 `
     )
     .option(
@@ -198,9 +204,9 @@ async function run(): Promise<void> {
             problems,
         }
     }
-
+    
     let fullstackExample = false
-
+/*
     if (program.fullstackExample == "saas") {
         await cloneExample({
             repository: SHUTTLE_SAAS_URL,
@@ -216,7 +222,7 @@ async function run(): Promise<void> {
         console.log("Currently supported examples: saas")
         return
     }
-
+    */
     if (!fullstackExample) {
         const args = []
 
@@ -235,18 +241,31 @@ async function run(): Promise<void> {
         if (program.eslint) {
             args.push("--eslint")
         }
+        if (program.nuxt) {
+            args.push("--nuxt")
+        }
 
         args.push(resolvedProjectPath)
+        // if next else nuxt
+        
+        if (program.nuxt) {
+            const createNuxtAppCmd = `npx nuxi init ${resolvedProjectPath}`;
+            execSync(createNuxtAppCmd, args, {
+                stdio: ["inherit", "inherit", "pipe"],
+            });
+        } else {
+                
+            
+            // If the user is on windows, we need to prefix the create-next-app cmd with node
+            const createNextAppCmd = `${
+                process.platform === "win32" ? "node " : ""
+            }${path.join(__dirname, "create-next-app")}`
 
-        // If the user is on windows, we need to prefix the create-next-app cmd with node
-        const createNextAppCmd = `${
-            process.platform === "win32" ? "node " : ""
-        }${path.join(__dirname, "create-next-app")}`
-
-        execSync(createNextAppCmd, args, {
-            shell: false,
-            stdio: ["inherit", "inherit", "pipe"],
-        })
+            execSync(createNextAppCmd, args, {
+                shell: false,
+                stdio: ["inherit", "inherit", "pipe"],
+            })
+        }
 
         const repository = program.shuttleExample || SHUTTLE_EXAMPLE_URL
         const shuttleProjectPath = path.join(resolvedProjectPath, "backend/")
@@ -257,8 +276,14 @@ async function run(): Promise<void> {
 
         createShuttleToml(shuttleProjectName, resolvedProjectPath)
 
-        patchPackage(resolvedProjectPath)
-        patchNextConfig(resolvedProjectPath)
+        //patchPackage(resolvedProjectPath)
+        if (program.nuxt) {
+            patchNuxtPackage(resolvedProjectPath)
+            patchNuxtConfig(resolvedProjectPath)
+        } else {
+            patchPackage(resolvedProjectPath)
+            patchNextConfig(resolvedProjectPath)
+        }
     }
 
     const shuttleOrange = chalk.hex("#ff8a3f")
