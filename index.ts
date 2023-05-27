@@ -160,6 +160,14 @@ async function run(): Promise<void> {
             }
         }
     }
+    
+    const VALID_FULLSTACK_OPTIONS = ['saas']; 
+    
+    if (program.fullstackExample && !VALID_FULLSTACK_OPTIONS.includes(program.fullstackExample)) {
+        throw {
+            error: `Invalid fullstack example type. Valid options are: ${VALID_FULLSTACK_OPTIONS.join(', ')}`,
+        }
+    }
 
     if (!projectPath) {
         const res = await prompts({
@@ -211,7 +219,6 @@ async function run(): Promise<void> {
             repository: SHUTTLE_SAAS_URL,
             projectPath: resolvedProjectPath,
         })
-
         createShuttleToml(shuttleProjectName, resolvedProjectPath)
         fullstackExample = true
     } else if (!fullstackExample) {
