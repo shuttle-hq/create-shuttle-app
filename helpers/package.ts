@@ -129,49 +129,21 @@ module.exports = nextConfig
     }
 }
 
+// Just a very basic overwrite of the nuxt.config.ts file
 export function patchNuxtConfig(projectPath: string) {
     const configPath = path.join(projectPath, "nuxt.config.ts")
     console.log(configPath)
-    if (existsSync(configPath)) {
-        const source = ts.createSourceFile(
-            "nuxt.config.ts",
-            readFileSync(configPath).toString(),
-            ts.ScriptTarget.ES5
-        )
-        // stringify source
-        
-        const stringifiedSource = JSON.stringify(source)
-        
-        //const result = ts.transform(source, [transformer])
-        //const newSource = ts.createPrinter().printFile(result.transformed[0])
-        writeFileSync(
-            configPath,
-            `
+    writeFileSync(
+        configPath,
+        `
 export default defineNuxtConfig({
-    nitro: {
-        prerender: {
-        crawlLinks: true
-        }
-    },
-})
-`       )
-    } else {
-        writeFileSync(
-            configPath,
-            `
-export default defineNuxtConfig({
-    nitro: {
-        prerender: {
-        crawlLinks: true
-        }
-    },
-    generate: {
-        dir: './backend/static'
-      }
-})
-`
-        )
+  nitro: {
+    prerender: {
+      crawlLinks: true
     }
+  }
+})
+`)
 }
 
 
