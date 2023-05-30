@@ -15,3 +15,6 @@ export const SHUTTLE_EXAMPLE_URL =
 
 export const SHUTTLE_SAAS_URL =
     "https://github.com/shuttle-hq/shuttle-examples/fullstack-templates/saas"
+
+export const SHUTTLE_SAAS_NUXT_URL =
+"https://github.com/shuttle-hq/shuttle-examples/fullstack-templates/saas-nuxt"

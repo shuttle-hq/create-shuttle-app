@@ -26,6 +26,7 @@ import {
     SHUTTLE_EXAMPLE_URL,
     SHUTTLE_SAAS_URL,
     PROTOC_VERSION,
+    SHUTTLE_SAAS_NUXT_URL,
 } from "./helpers/constants"
 
 let projectPath = ""
@@ -217,6 +218,13 @@ async function run(): Promise<void> {
     if (program.fullstackExample == "saas") {
         await cloneExample({
             repository: SHUTTLE_SAAS_URL,
+            projectPath: resolvedProjectPath,
+        })
+        createShuttleToml(shuttleProjectName, resolvedProjectPath)
+        fullstackExample = true
+    } else if (program.fullstackExample === "saas-nuxt") {
+        await cloneExample({
+            repository: SHUTTLE_SAAS_NUXT_URL,
             projectPath: resolvedProjectPath,
         })
         createShuttleToml(shuttleProjectName, resolvedProjectPath)
