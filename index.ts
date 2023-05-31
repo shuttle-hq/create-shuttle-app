@@ -162,7 +162,7 @@ async function run(): Promise<void> {
         }
     }
     
-    const VALID_FULLSTACK_OPTIONS = ['saas']; 
+    const VALID_FULLSTACK_OPTIONS = ['saas', 'saas-nuxt']; 
     
     if (program.fullstackExample && !VALID_FULLSTACK_OPTIONS.includes(program.fullstackExample)) {
         throw {
