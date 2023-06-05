@@ -59,6 +59,7 @@ If you wish to stop your deployment: `npm run stop`
 If you're looking to contribute, you can quickly test any changes you've made by running the following:
 
 ```yarn release
+yarn build
 yarn copy-assets
 node dist/index.js 
 ```
@@ -77,5 +78,5 @@ this.
 If you want to install dependencies for `create-shuttle-app` manually, these are the required 
 native dependencies:
 
-- Rust version 1.65: https://www.rust-lang.org/tools/install
+- Rust version 1.68: https://www.rust-lang.org/tools/install
 - cargo-shuttle latest version: https://docs.shuttle.rs/introduction/installation

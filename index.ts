@@ -9,7 +9,6 @@ import {
     installRust,
     installShuttle,
     checkInstalled,
-    installProtoc,
 } from "./helpers/check-shuttle"
 import {
     appendUniqueSuffix,
@@ -25,7 +24,6 @@ import {
     SHUTTLE_VERSION,
     SHUTTLE_EXAMPLE_URL,
     SHUTTLE_SAAS_URL,
-    PROTOC_VERSION,
 } from "./helpers/constants"
 
 let projectPath = ""
@@ -113,30 +111,6 @@ async function run(): Promise<void> {
         }
     }
 
-    if (
-        !checkInstalled(
-            "protoc",
-            `>=${PROTOC_VERSION} || >=${PROTOC_VERSION.substring(2)}`
-        )
-    ) {
-        const res = await prompts({
-            type: "confirm",
-            name: "installProtoc",
-            initial: true,
-            message: `create-shuttle-app requires a Protoc version greater than or equal to ${PROTOC_VERSION}, 
-            do you wish to install it now?`,
-        })
-
-        if (res.installProtoc) {
-            installProtoc()
-        } else {
-            throw {
-                error: `Protoc is required to use shuttle, please refer to https://docs.shuttle.rs/support/installing-protoc
-                for installation instructions. After installing protoc, please run create-shuttle-app again.`,
-            }
-        }
-    }
-
     if (!checkInstalled("cargo-shuttle", SHUTTLE_VERSION)) {
         const res = await prompts({
             type: "confirm",
@@ -199,25 +173,22 @@ async function run(): Promise<void> {
         }
     }
 
-    let fullstackExample = false
+    if (program.fullstackExample) {
+        if (program.fullstackExample == "saas") {
+            await cloneExample({
+                repository: SHUTTLE_SAAS_URL,
+                projectPath: resolvedProjectPath,
+            })
 
-    if (program.fullstackExample == "saas") {
-        await cloneExample({
-            repository: SHUTTLE_SAAS_URL,
-            projectPath: resolvedProjectPath,
-        })
-
-        createShuttleToml(shuttleProjectName, resolvedProjectPath)
-        fullstackExample = true
-    } else {
-        console.error(
-            "The provided fullstack example is not known. Please provide a supported example."
-        )
-        console.log("Currently supported examples: saas")
-        return
-    }
-
-    if (!fullstackExample) {
+            createShuttleToml(shuttleProjectName, resolvedProjectPath)
+        } else {
+            console.error(
+                "The provided fullstack example is not known. Please provide a supported example."
+            )
+            console.log("Currently supported examples: saas")
+            return
+        }
+    } else  {
         const args = []
 
         if (program.javascript) {
