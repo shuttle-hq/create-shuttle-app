@@ -59,6 +59,7 @@ If you wish to stop your deployment: `npm run stop`
 If you're looking to contribute, you can quickly test any changes you've made by running the following:
 
 ```yarn release
+yarn build
 yarn copy-assets
 node dist/index.js 
 ```
