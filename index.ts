@@ -173,25 +173,22 @@ async function run(): Promise<void> {
         }
     }
 
-    let fullstackExample = false
+    if (program.fullstackExample) {
+        if (program.fullstackExample == "saas") {
+            await cloneExample({
+                repository: SHUTTLE_SAAS_URL,
+                projectPath: resolvedProjectPath,
+            })
 
-    if (program.fullstackExample == "saas") {
-        await cloneExample({
-            repository: SHUTTLE_SAAS_URL,
-            projectPath: resolvedProjectPath,
-        })
-
-        createShuttleToml(shuttleProjectName, resolvedProjectPath)
-        fullstackExample = true
-    } else {
-        console.error(
-            "The provided fullstack example is not known. Please provide a supported example."
-        )
-        console.log("Currently supported examples: saas")
-        return
-    }
-
-    if (!fullstackExample) {
+            createShuttleToml(shuttleProjectName, resolvedProjectPath)
+        } else {
+            console.error(
+                "The provided fullstack example is not known. Please provide a supported example."
+            )
+            console.log("Currently supported examples: saas")
+            return
+        }
+    } else  {
         const args = []
 
         if (program.javascript) {
