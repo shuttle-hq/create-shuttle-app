@@ -9,7 +9,6 @@ import {
     installRust,
     installShuttle,
     checkInstalled,
-    installProtoc,
 } from "./helpers/check-shuttle"
 import {
     appendUniqueSuffix,
@@ -25,7 +24,6 @@ import {
     SHUTTLE_VERSION,
     SHUTTLE_EXAMPLE_URL,
     SHUTTLE_SAAS_URL,
-    PROTOC_VERSION,
 } from "./helpers/constants"
 
 let projectPath = ""
@@ -109,30 +107,6 @@ async function run(): Promise<void> {
             throw {
                 error: `Rust is required to use shuttle, please refer to https://www.rust-lang.org/tools/install
                 for installation instructions. After installing Rust, please run create-shuttle-app again.`,
-            }
-        }
-    }
-
-    if (
-        !checkInstalled(
-            "protoc",
-            `>=${PROTOC_VERSION} || >=${PROTOC_VERSION.substring(2)}`
-        )
-    ) {
-        const res = await prompts({
-            type: "confirm",
-            name: "installProtoc",
-            initial: true,
-            message: `create-shuttle-app requires a Protoc version greater than or equal to ${PROTOC_VERSION}, 
-            do you wish to install it now?`,
-        })
-
-        if (res.installProtoc) {
-            installProtoc()
-        } else {
-            throw {
-                error: `Protoc is required to use shuttle, please refer to https://docs.shuttle.rs/support/installing-protoc
-                for installation instructions. After installing protoc, please run create-shuttle-app again.`,
             }
         }
     }
