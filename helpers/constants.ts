@@ -1,6 +1,6 @@
 // The minimum required version of rust.
 export const RUSTC_VERSION = "1.72.0"
-export const SHUTTLE_VERSION = "0.25.1"
+export const SHUTTLE_VERSION = "0.26.0"
 
 export const SHUTTLE_TAG = `v${SHUTTLE_VERSION}`
 export const SHUTTLE_DOWNLOAD_URL = `https://github.com/shuttle-hq/shuttle/releases/download/${SHUTTLE_TAG}/`
