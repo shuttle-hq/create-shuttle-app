@@ -1,5 +1,5 @@
 // The minimum required version of rust.
-export const RUSTC_VERSION = "1.72.0"
+export const RUSTC_VERSION = "1.73.0"
 export const SHUTTLE_VERSION = "0.32.0"
 
 export const SHUTTLE_TAG = `v${SHUTTLE_VERSION}`
