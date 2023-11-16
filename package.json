@@ -1,6 +1,6 @@
 {
     "name": "create-shuttle-app",
-    "version": "0.1.35",
+    "version": "0.1.36",
     "bin": {
         "create-shuttle-app": "./dist/index.js"
     },
