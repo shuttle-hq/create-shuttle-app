@@ -1,3 +1,9 @@
+## Maintenance Status
+
+With recent improvements to `cargo shuttle init`, `init` can now be used to easily initialize projects from any template. Since `init` can do what create-shuttle-app does, and more, we have decided to deprecate create-shuttle-app. Consequently, the repository will be archived. 
+
+We encourage any create-shuttle-app users to test out the recent updates to cargo shuttle init, and let us know if there is any functionality you feel is missing!
+
 <p align="center">
     <img width="300" src="https://raw.githubusercontent.com/shuttle-hq/shuttle/master/assets/logo-rectangle-transparent.png"/>
 </p>
